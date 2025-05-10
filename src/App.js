@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import Navbar from './components/navbar/navbar';
 import Footer from './components/footer/footer';
+import FloatingFAQButton from './components/floatingButton/floatingButton';
 
 import { Routes, Route } from 'react-router-dom';
 
@@ -25,6 +26,7 @@ function App() {
         <Route path="/regist" element={<Regist />} />
         <Route path="/login" element={<Login />} />
       </Routes>
+      <FloatingFAQButton />
       <Footer />
     </div>
   );

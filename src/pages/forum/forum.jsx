@@ -1,7 +1,7 @@
 // src/pages/forum/Forum.js
 import { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../../firebase/firebase';  // Pastikan import db benar
+import { db } from '../../firebase/firebase'; 
 
 function Forum() {
   const [forums, setForums] = useState([]);
