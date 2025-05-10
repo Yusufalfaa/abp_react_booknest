@@ -5,12 +5,12 @@ import { getFirestore } from "firebase/firestore"; // jika pakai Firestore
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBpjY45F6sequ_uQxJ4vlnoow-2vEa5jlw",
-  authDomain: "booknest-firebase.firebaseapp.com",
-  projectId: "booknest-firebase",
-  storageBucket: "booknest-firebase.firebasestorage.app",
-  messagingSenderId: "678465747831",
-  appId: "1:678465747831:web:cec6e6cc035e095a5cbf72"
+  apiKey: process.env.REACT_APP_API_KEY,
+  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_APP_ID
 };
 
 // Initialize Firebase
