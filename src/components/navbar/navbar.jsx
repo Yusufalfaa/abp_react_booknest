@@ -4,54 +4,108 @@ import { NavLink } from 'react-router-dom';
 
 const Navbar = () => {
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark shadow-sm">
-      <div className="container">
-        <NavLink className="navbar-brand" to="/">
-          <img
-            src={`assets//BookNest.png`}
-            alt="Logo"
-            width="150"
-            height="40"
-            className="d-inline-block align-text-top me-2"
-          />
-        </NavLink>
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon" />
-        </button>
-        <div className="collapse navbar-collapse justify-content-between" id="navbarNav">
-          <ul className="navbar-nav mx-auto">
-            <li className="nav-item">
-              <NavLink className="nav-link" exact to="/" activeClassName="active">
-                Beranda
+    <header id="header" className="site-header">
+      <nav className="navbar navbar-expand-lg py-3">
+        <div className="container">
+          <NavLink className="navbar-brand" to="/">
+            <img
+              src="assets/BookNest.png"
+              alt="Logo"
+              className="logo"
+            />
+          </NavLink>
+          <button
+            className="navbar-toggler d-flex d-lg-none order-3 p-2"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#bdNavbar"
+            aria-controls="bdNavbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <svg className="navbar-icon">
+              <use xlinkHref="#navbar-icon"></use>
+            </svg>
+          </button>
+          <div
+            className="offcanvas offcanvas-end"
+            tabIndex="-1"
+            id="bdNavbar"
+            aria-labelledby="bdNavbarOffcanvasLabel"
+          >
+            <div className="offcanvas-header px-4 pb-0">
+              <NavLink className="navbar-brand" to="/">
+                <img
+                  src="assets/BookNestFix.png"
+                  alt="Logo"
+                  className="logo"
+                />
               </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink className="nav-link" to="/allbooks" activeClassName="active">
-                Tentang Puskesmas
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink className="nav-link" to="/forum" activeClassName="active">
-                Saran & Keluhan
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink className="nav-link" to="/mybooks" activeClassName="active">
-                Kontak
-              </NavLink>
-            </li>
-          </ul>
+              <button
+                type="button"
+                className="btn-close btn-close-black"
+                data-bs-dismiss="offcanvas"
+                aria-label="Close"
+              />
+            </div>
+            <div className="offcanvas-body">
+              <ul
+                id="navbar"
+                className="navbar-nav text-uppercase justify-content-start justify-content-lg-center align-items-start align-items-lg-center flex-grow-1"
+              >
+                <li className="nav-item">
+                  <NavLink
+                    className="nav-link me-4"
+                    exact
+                    to="/"
+                    activeClassName="active"
+                  >
+                    Home
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink
+                    className="nav-link me-4"
+                    to="/allbooks"
+                    activeClassName="active"
+                  >
+                    All Books
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink
+                    className="nav-link me-4"
+                    to="/forum"
+                    activeClassName="active"
+                  >
+                    Forum
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink
+                    className="nav-link me-4"
+                    to="/mybooks"
+                    activeClassName="active"
+                  >
+                    MyBooks
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink to="/login" className="signin-btn pt-3 pb-3 pe-4 ps-4">
+                    Sign In
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink to="/regist" className="signup-btn pt-3 pb-3 pe-4 ps-4">
+                    Sign Up
+                  </NavLink>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </header>
   );
 };
 
