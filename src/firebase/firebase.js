@@ -1,7 +1,7 @@
 // src/firebase/firebase.js
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth"; // jika kamu pakai Auth
-import { getFirestore } from "firebase/firestore"; // jika pakai Firestore
+import { getFirestore, doc, getDoc, collection, getDocs, query } from "firebase/firestore"; // jika pakai Firestore
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -20,4 +20,4 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-export { auth, db };
+export { auth, db, doc, getDoc, collection, getDocs, query };

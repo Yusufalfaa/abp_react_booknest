@@ -12,7 +12,7 @@ import Forum from './pages/forum/forum';
 import MyBooks from './pages/mybooks/mybooks';
 import Regist from './pages/login/regist';
 import Login from './pages/login/login';
-
+import Reply from './pages/forum/reply';
 
 function App() {
   return (
@@ -25,6 +25,7 @@ function App() {
         <Route path="/mybooks" element={<MyBooks />} />
         <Route path="/regist" element={<Regist />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/discuss" element={<Reply />} />
       </Routes>
       <FloatingFAQButton />
       <Footer />
