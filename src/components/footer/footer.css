@@ -1,7 +1,6 @@
 /*--------------------------------------------------------------
 /** 1. VARIABLES
 --------------------------------------------------------------*/
-
 :root {
     --accent-color:             #717171;
     --white-color:              #ffffff;
@@ -24,7 +23,7 @@
     --navbar-color-color:       #131814;
     --swiper-theme-color:       #4A4A4A;
     --swiper-pagination-color:  #4A4A4A;
-    --bs-box-shadow: 0 0.2rem 0.6rem rgba(0, 0, 0, 0.08);
+    --bs-box-shadow:            0 0.2rem 0.6rem rgba(0, 0, 0, 0.08);
     
     --bs-btn-font-size: 1rem;
     --star-color: #FF9933;
@@ -32,94 +31,157 @@
 
 /* Fonts */
 :root {
-    --body-font           : "Poppins", sans-serif;
-    --heading-font        : "Poppins", sans-serif;
+    --body-font: "Nunito", sans-serif;
+    --heading-font: "Nunito", sans-serif;
 }
 
-@media (min-width: 1850px){
-    .container, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
-        max-width: 1540px;
-    }
+#footer,
+#footer * {
+    text-align: left !important;
 }
+
 
 /*--------------------------------------------------------------
-/** 2. Custom Section
+/** 2. FOOTER SECTION
 --------------------------------------------------------------*/
-
 
 .footer {
     background-color: var(--light-color);
     color: var(--black-color);
-    padding: 40px 30px;
-    font-family: 'Poppins', sans-serif;
+    padding: 60px 30px 40px; /* Tambahkan padding atas */
+    font-family: var(--body-font);
     text-align: left;
-  }
-  
-  .footer-content {
+}
+
+.footer-content {
     max-width: 1200px;
     margin: 0 auto;
-  }
-  
-  .footer-content h3 {
-    font-size: 20px;
-    margin-bottom: 20px;
-    font-weight: 600;
-  }
-  
-  .footer-content ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .footer-content ul li {
-    display: flex;      
-    align-items: center;        
-    gap: 8px;                 
-    font-size: 14px;
-    margin-bottom: 12px;
-    justify-content: flex-start;
-  }
-  
-  .footer-content ul li i {
-    font-size: 16px;
-    display: flex;     
-    align-items: center;
-    min-width: 20px;      
-  }
-  
-  a {
-    text-decoration: none;
-    color: var(--black-color);
-  }
-  
-  .footer-content {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-    max-width: 1200px;
-    margin: 0 auto;
     align-items: flex-start;
-  }
-  
-  .footer-right {
+}
+
+.footer-content h3,
+.footer-menu h5,
+.widget-title {
+    font-size: 20px;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.footer-content ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-content ul li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    margin-bottom: 12px;
+    justify-content: flex-start;
+    text-align: left;
+}
+
+.footer-content ul li i {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    min-width: 20px;
+}
+
+a {
+    text-decoration: none;
+    color: var(--black-color);
+    text-align: left;
+}
+
+.footer-right {
     align-self: flex-end;
     font-size: 14px;
     text-align: right;
     color: var(--black-color);
-  }
-  
-  /* Responsive */
-  @media (max-width: 768px) {
+}
+
+/* Footer menu link styling */
+#footer .menu-list .menu-item a {
+    font-size: 0.7619em;
+    font-weight: 300;
+    letter-spacing: 0.09em;
+    color: var(--black-color);
+    text-align: left;
+}
+
+#footer .menu-list .menu-item a:hover {
+    color: var(--primary-color);
+}
+
+/* Social links styling */
+.social-links {
+    text-align: left;
+}
+
+.social-links svg {
+    width: 20px;
+    height: 20px;
+    transition: 0.3s ease-in-out;
+    color: var(--light-gray-color);
+}
+
+.social-links svg:hover {
+    color: var(--primary-color);
+}
+
+.social-links li {
+    padding-right: 30px;
+}
+
+/* Logo image styling */
+.footer-menu img {
+    width: 157px;
+    height: 63px;
+    object-fit: contain;
+    display: block;
+    margin-bottom: 15px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
     .footer-content {
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
     }
-  
+
+    .footer-content h3,
+    .footer-menu h5,
+    .widget-title,
+    .footer-content ul li,
+    .footer-content p,
+    .footer-menu,
+    .menu-list {
+        text-align: left;
+    }
+
     .footer-right {
-      align-self: center;
-      margin-top: 20px;
+        align-self: flex-start;
+        margin-top: 20px;
+        text-align: left;
     }
-  }
-  
+}
+
+
+/* Container max width on large screens */
+@media (min-width: 1850px) {
+    .container,
+    .container-lg,
+    .container-md,
+    .container-sm,
+    .container-xl,
+    .container-xxl {
+        max-width: 1540px;
+    }
+}
