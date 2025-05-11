@@ -1,9 +1,10 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithEmailAndPassword  } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword   } from "firebase/auth";
 import {
   getFirestore,
   doc,
   getDoc,
+  setDoc,
   collection,
   getDocs,
   query,
@@ -26,4 +27,4 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 // Export fitur yang kamu pakai
-export { auth, signInWithEmailAndPassword , db, doc, getDoc, collection, getDocs, query, where };
+export { auth, signInWithEmailAndPassword, createUserWithEmailAndPassword  , db, doc, getDoc, setDoc, collection, getDocs, query, where };
