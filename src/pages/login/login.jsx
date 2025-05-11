@@ -70,7 +70,7 @@ const Login = () => {
             <h2 className="fw-bold">Welcome Back!</h2>
             <p className="mt-2 text-center">Sign in and start your journey</p>
             <p className="mt-5 text-center">Don’t have an account yet?</p>
-            <a className="login-signup-btn py-2 w-75" href="/signup">Sign Up</a>
+            <a className="login-signup-btn py-2 w-75" href="/regist">Sign Up</a>
           </div>
 
           {/* Right Section (Form) */}
@@ -99,6 +99,17 @@ const Login = () => {
                 {isSubmitting ? 'Signing In...' : 'Sign In'}
               </button>
             </form>
+            <div className="separator-container">
+              <hr className="separator-line" />
+              <span className="separator-text">OR</span>
+              <hr className="separator-line" />
+            </div>
+
+            <button type="button" className="btn w-100 google-btn mt-3">
+              <img src="/assets/google-icon.png" alt="Google" className="google-icon" />
+              Login with Google
+            </button>
+
           </div>
         </div>
       </div>

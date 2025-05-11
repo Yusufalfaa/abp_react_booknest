@@ -56,6 +56,7 @@
   width: 100%;
   height: 100%;
   z-index: 1;
+    pointer-events: none; 
 }
 
 .image-section .logo {
@@ -118,4 +119,186 @@
   padding: 15px;
   border-radius: 5px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive Layouts */
+@media (max-width: 992px) {
+  .login-container {
+    flex-direction: column;
+    height: auto;
+    width: 90%;
+    margin: 20px auto;
+    border-radius: 10px;
+  }
+
+  .content-wrapper {
+    flex-direction: column;
+  }
+
+  .image-section {
+    width: 100%;
+    min-height: 250px;
+    border-radius: 10px 10px 0 0;
+    padding: 30px 20px;
+    text-align: center;
+  }
+
+  .image-section h2,
+  .image-section p {
+    z-index: 2;
+  }
+
+  .image-section .logo {
+    position: static;
+    margin-bottom: 10px;
+    width: 120px;
+    z-index: 2;
+  }
+
+  .form-section {
+    width: 100%;
+    border-radius: 0 0 10px 10px;
+    padding: 30px 20px;
+  }
+
+  .login-signup-btn {
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  .form-floating label,
+  .form-control {
+    font-size: 14px;
+  }
+
+  .btn-close {
+    top: 15px;
+    right: 15px;
+    scale: 0.9;
+  }
+
+  .main-btn {
+    padding: 10px;
+    font-size: 15px;
+  }
+
+  .success-alert {
+    font-size: 14px;
+    padding: 12px;
+    width: auto;
+  }
+}
+
+@media (max-width: 576px) {
+  .image-section {
+    min-height: 200px;
+    background-position: center center;
+  }
+
+  .image-section h2 {
+    font-size: 20px;
+  }
+
+  .image-section p {
+    font-size: 14px;
+  }
+
+  .form-section h2 {
+    font-size: 22px;
+  }
+
+  .form-section {
+    padding: 20px 15px;
+  }
+
+  .form-floating input {
+    padding: 12px 10px;
+  }
+
+  .main-btn {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .btn-close {
+    scale: 0.85;
+  }
+}
+
+@media (max-width: 375px) {
+  .login-container {
+    width: 95%;
+  }
+
+  .form-section {
+    padding: 15px 10px;
+  }
+
+  .main-btn,
+  .login-signup-btn {
+    font-size: 13px;
+    padding: 10px;
+  }
+
+  .form-floating label {
+    font-size: 13px;
+  }
+
+  .form-floating input {
+    font-size: 13px;
+  }
+
+  .success-alert {
+    font-size: 13px;
+    padding: 10px;
+    top: 10px;
+    right: 10px;
+  }
+}
+
+/* Separator & Login with Google section */
+
+.separator-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0 0px;
+  gap: 10px;
+}
+
+.separator-line {
+  flex: 1;
+  height: 1px;
+  background-color: #ccc;
+  border: none;
+}
+
+.separator-text {
+  font-size: 14px;
+  color: #777;
+  font-weight: 500;
+}
+
+/* Google Button */
+.google-btn {
+  background-color: white;
+  color: #444;
+  border: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.google-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.google-icon {
+  width: 20px;
+  height: 20px;
 }
