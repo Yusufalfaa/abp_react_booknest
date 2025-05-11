@@ -72,59 +72,62 @@ const AllBooks = ({ selectedGenre }) => {
         </div>
 
         {/* Pagination */}
-        <nav aria-label="Page navigation example" style={{ marginTop: '32px' }}>
-          <ul className="pagination justify-content-center">
-  {/* Previous Button */}
-  <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-    <button className="page-link" onClick={() => handlePageChange(currentPage - 1)}>
-      Prev
-    </button>
-  </li>
+{/* Pagination */}
+<nav aria-label="Page navigation example" style={{ marginTop: '32px' }}>
+  <div className="pagination-wrapper">
+    <ul className="pagination justify-content-center">
+      {/* Previous Button */}
+      <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+        <button className="page-link" onClick={() => handlePageChange(currentPage - 1)}>
+          Prev
+        </button>
+      </li>
 
-  {/* Page 1 */}
-  <li className={`page-item ${currentPage === 1 ? 'active' : ''}`}>
-    <button className="page-link" onClick={() => handlePageChange(1)}>1</button>
-  </li>
+      {/* Page 1 */}
+      <li className={`page-item ${currentPage === 1 ? 'active' : ''}`}>
+        <button className="page-link" onClick={() => handlePageChange(1)}>1</button>
+      </li>
 
-  {/* ... after 1 */}
-  {currentPage > 4 && (
-    <li className="page-item disabled">
-      <span className="page-link">...</span>
-    </li>
-  )}
+      {/* ... after 1 */}
+      {currentPage > 4 && (
+        <li className="page-item disabled">
+          <span className="page-link">...</span>
+        </li>
+      )}
 
-  {/* Middle Pages */}
-  {generatePageNumbers().map((page) => (
-    <li key={page} className={`page-item ${currentPage === page ? 'active' : ''}`}>
-      <button className="page-link" onClick={() => handlePageChange(page)}>{page}</button>
-    </li>
-  ))}
+      {/* Middle Pages */}
+      {generatePageNumbers().map((page) => (
+        <li key={page} className={`page-item ${currentPage === page ? 'active' : ''}`}>
+          <button className="page-link" onClick={() => handlePageChange(page)}>{page}</button>
+        </li>
+      ))}
 
-  {/* ... before last page */}
-  {currentPage < totalPages - 3 && (
-    <li className="page-item disabled">
-      <span className="page-link">...</span>
-    </li>
-  )}
+      {/* ... before last page */}
+      {currentPage < totalPages - 3 && (
+        <li className="page-item disabled">
+          <span className="page-link">...</span>
+        </li>
+      )}
 
-  {/* Last Page */}
-  {totalPages > 1 && (
-    <li className={`page-item ${currentPage === totalPages ? 'active' : ''}`}>
-      <button className="page-link" onClick={() => handlePageChange(totalPages)}>
-        {totalPages}
-      </button>
-    </li>
-  )}
+      {/* Last Page */}
+      {totalPages > 1 && (
+        <li className={`page-item ${currentPage === totalPages ? 'active' : ''}`}>
+          <button className="page-link" onClick={() => handlePageChange(totalPages)}>
+            {totalPages}
+          </button>
+        </li>
+      )}
 
-  {/* Next Button */}
-  <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-    <button className="page-link" onClick={() => handlePageChange(currentPage + 1)}>
-      Next
-    </button>
-  </li>
-</ul>
+      {/* Next Button */}
+      <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+        <button className="page-link" onClick={() => handlePageChange(currentPage + 1)}>
+          Next
+        </button>
+      </li>
+    </ul>
+  </div>
+</nav>
 
-        </nav>
       </div>
     </section>
   );

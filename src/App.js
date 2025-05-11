@@ -3,7 +3,6 @@ import './App.css';
 import Navbar from './components/navbar/navbar';
 import Footer from './components/footer/footer';
 import FloatingFAQButton from './components/floatingButton/floatingButton';
-import '@fortawesome/fontawesome-free/css/all.min.css';
 
 
 import { Routes, Route } from 'react-router-dom';

@@ -268,3 +268,34 @@
     gap: 2px;
   }
 }
+
+/* Responsive Pagination Container */
+.pagination-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 0 16px;
+  overflow-x: hidden;
+}
+
+/* Enable wrapping of pagination items */
+.pagination {
+  flex-wrap: wrap; /* 👈 INI KUNCI AGAR BISA MULTI BARIS */
+  max-width: 100%;
+  justify-content: center;
+  gap: 4px;
+  row-gap: 8px; /* Jarak antar baris */
+}
+
+/* Responsive tweaks for smaller screens */
+@media (max-width: 576px) {
+  .page-link {
+    padding: 4px 6px;
+    font-size: 0.8rem;
+  }
+
+  .pagination {
+    gap: 3px;
+    row-gap: 6px;
+  }
+}
