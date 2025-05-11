@@ -36,23 +36,27 @@
     --heading-font        : "Nunito", sans-serif;
 }
 
-@media (min-width: 1850px){
-    .container, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
-        max-width: 1540px;
-    }
-}
-
-/*--------------------------------------------------------------
-/** 2. Custom Section
---------------------------------------------------------------*/
-
+/* Global Styling for all buttons to maintain consistency */
 * {
     font-family: 'Nunito', sans-serif;
     margin: 0;
     padding: 0;
-  }
+}
 
-  .site-header {
+button,
+.nav-link {
+    font-family: 'Nunito', sans-serif;  /* Apply font to buttons and nav links */
+    font-size: 1rem;                    /* Uniform font size */
+    font-weight: 600;                   /* Consistent font weight */
+    text-transform: uppercase;          /* Text in uppercase for buttons */
+    letter-spacing: 0.09em;             /* Spacing between letters */
+}
+
+/*--------------------------------------------------------------
+/** 2. Custom Section (Navbar & Buttons)
+--------------------------------------------------------------*/
+
+.site-header {
     background-color: var(--light-color);
     position: sticky;
     top: 0;
@@ -61,157 +65,164 @@
     padding: 10px 0;
     transition: background 0.3s ease-out;
     margin-bottom: 40px;
-  }
+}
 
-  .navbar {
+.navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0;
-  }
+}
 
-  .navbar .container {
+.navbar .container {
     position: relative;
-  }
+}
 
-  .navbar-brand {
+.navbar-brand {
     font-size: 1.5rem;
     display: flex;
     align-items: center;
     margin-right: 20px;
-  }
+}
 
-  .navbar-brand img {
+.navbar-brand img {
     width: 157px;
     height: 63px;
     object-fit: contain;
     margin-right: 10px;
-  }
-
-  .navbar-toggler {
-    width: 50px;
-    height: 50px;
-  }
-
-  .navbar-toggler-icon {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='black' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
 }
 
+.navbar-toggler {
+    width: 50px;
+    height: 50px;
+}
 
-  .navbar-nav {
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='black' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+.navbar-nav {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 30px; 
+    gap: 30px;
     margin: 0;
-  }
+}
 
-  .navbar-nav .nav-item .nav-link {
+.navbar-nav .nav-item .nav-link {
     display: flex;
     align-items: center;
     padding: 10px 20px;
     color: var(--black-color);
-    font-size: 1rem;
     text-decoration: none;
-    font-weight: 600;
-    letter-spacing: 0.09em;
-  }
+    transition: color 0.3s ease;
+    font-weight: bold;
+}
 
-  .navbar-nav .nav-item .nav-link:hover {
+.navbar-nav .nav-item .nav-link:hover {
     color: var(--primary-color);
     font-weight: bold;
-  }
+}
 
-  .navbar-nav .nav-item .nav-link.active,
-  .navbar-nav .nav-item .nav-link:focus {
+.navbar-nav .nav-item .nav-link.active,
+.navbar-nav .nav-item .nav-link:focus {
     color: var(--primary-color);
     font-weight: bold;
-  }
+}
 
-  /* Sign In Button */
-  .signin-btn {
-    font-size: 1rem;
+/* Button Styling */
+button,
+.signin-btn,
+.signup-btn,
+.logout-btn {
+  font-family: 'Nunito', sans-serif;
+    font-size: var(--bs-btn-font-size);
     padding: 10px 20px;
     color: var(--white-color);
+    border-radius: 30px;
+    border: none;
+    text-decoration: none;
+    display: inline-flex;  /* Menggunakan flexbox untuk center teks */
+    justify-content: center;  /* Memastikan teks ada di tengah horizontal */
+    align-items: center;  /* Memastikan teks ada di tengah vertikal */
+    transition: background-color 0.3s ease;
+    height: 44px;
+}
+
+.signin-btn {
     background-color: var(--primary-color); 
-    border-radius: 30px;
-    border: none;
-    text-decoration: none;
-    display: inline-block; 
-    transition: background-color 0.3s ease;
-  }
+}
 
-  .signin-btn:hover {
+.signin-btn:hover {
     background-color: var(--accent-color);
-  }
+}
 
-  /* Sign Up Button */
-  .signup-btn {
-    font-size: 1rem;
-    padding: 10px 20px;
-    color: var(--white-color);
+.signup-btn {
     background-color: var(--black-color); 
-    border-radius: 30px;
-    border: none;
-    text-decoration: none;
-    display: inline-block;
-    transition: background-color 0.3s ease;
-  }
+}
 
-  .signup-btn:hover {
+.signup-btn:hover {
     background-color: var(--accent-color); 
-  }
+}
 
-  /* OFFCANVAS MENU */
-  .offcanvas-header {
+.logout-btn {
+    background-color: var(--black-color); /* Same as sign up button */
+}
+
+.logout-btn:hover {
+    background-color: var(--accent-color); /* Same hover effect */
+}
+
+/* OFFCANVAS MENU */
+.offcanvas-header {
     display: flex;
     justify-content: space-between;
     padding: 10px;
-  }
+}
 
-  .offcanvas-body {
+.offcanvas-body {
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
+}
 
-  .offcanvas-nav {
+.offcanvas-nav {
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
+}
 
-  .offcanvas-nav .nav-item {
+.offcanvas-nav .nav-item {
     margin-bottom: 1rem;
-  }
+}
 
-  .user-items {
+.user-items {
     display: flex;
     justify-content: flex-end;
     width: 100%;
-  }
+}
 
-  .user-items .btn {
+.user-items .btn {
     padding: 10px 20px;
     border-radius: 5px;
     font-size: 1rem;
     margin-left: 10px;
-  }
+}
 
-  /* Search Box */
-  .search-item {
+/* Search Box */
+.search-item {
     position: relative;
-  }
+}
 
-  .search-box {
+.search-box {
     position: absolute;
     top: 50%;
     right: 5px;
     transform: translateY(-50%);
     width: 180px;
-  }
+}
 
-  .search-results {
+.search-results {
     position: absolute;
     top: 50px;
     width: 100%;
@@ -219,4 +230,57 @@
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     z-index: 999;
-  }
+}
+
+/* Tombol Log Out di Navbar */
+.navbar .logout-btn {
+    font-size: var(--bs-btn-font-size);
+    padding: 10px 20px;
+    color: var(--white-color);
+    background-color: var(--black-color);
+    border-radius: 30px;
+    border: none;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+}
+
+.navbar .logout-btn:hover {
+    background-color: var(--accent-color);
+}
+
+/* Link Sign In */
+.navbar .signin-btn {
+    font-size: var(--bs-btn-font-size);
+    padding: 10px 20px;
+    color: var(--white-color);
+    background-color: var(--primary-color);
+    border-radius: 30px;
+    text-decoration: none;
+    display: inline-flex; /* Menjaga teks terpusat */
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.navbar .signin-btn:hover {
+    background-color: var(--accent-color);
+}
+
+/* Link Sign Up */
+.navbar .signup-btn {
+    font-size: var(--bs-btn-font-size);
+    padding: 10px 20px;
+    color: var(--white-color);
+    background-color: var(--black-color);
+    border-radius: 30px;
+    text-decoration: none;
+    display: inline-flex; /* Menjaga teks terpusat */
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.navbar .signup-btn:hover {
+    background-color: var(--accent-color);
+}

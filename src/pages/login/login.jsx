@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './login.css';
+import { auth, signInWithEmailAndPassword } from '../../firebase/firebase';  // Adjust path as needed
+import { useNavigate } from 'react-router-dom';  // Replaced useHistory with useNavigate
 
 const Login = () => {
   const [successAlert, setSuccessAlert] = useState(false);
-  const [usernameError, setUsernameError] = useState('');
+  const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate(); // Use navigate instead of history
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -17,18 +20,18 @@ const Login = () => {
     }
   }, []);
 
-  const handleSignIn = (event) => {
+  const handleSignIn = async (event) => {
     event.preventDefault();
-    const username = event.target.username.value.trim();
+    const email = event.target.email.value.trim();  // Changed to email
     const password = event.target.password.value.trim();
 
-    setUsernameError('');
+    setEmailError('');
     setPasswordError('');
 
     let isValid = true;
 
-    if (!username) {
-      setUsernameError('Username is required');
+    if (!email) {
+      setEmailError('Email is required');
       isValid = false;
     }
 
@@ -39,7 +42,18 @@ const Login = () => {
 
     if (isValid) {
       setIsSubmitting(true);
-      // Add login logic here
+      try {
+        // Firebase authentication logic for email and password
+        await signInWithEmailAndPassword(auth, email, password);
+        setIsSubmitting(false);
+        // Redirect to dashboard or home page upon successful login
+        navigate('/'); // Navigate to the home page or dashboard after successful login
+      } catch (error) {
+        setIsSubmitting(false);
+        // Handle error
+        setEmailError('Invalid email or password');
+        setPasswordError('');
+      }
     }
   };
 
@@ -80,9 +94,9 @@ const Login = () => {
 
             <form onSubmit={handleSignIn}>
               <div className="form-floating mb-3">
-                <input type="text" className="form-control" id="username" name="username" placeholder="Username" required />
-                <label htmlFor="username">Username</label>
-                {usernameError && <div className="text-danger">{usernameError}</div>}
+                <input type="email" className="form-control" id="email" name="email" placeholder="Email" required />
+                <label htmlFor="email">Email</label>
+                {emailError && <div className="text-danger">{emailError}</div>}
               </div>
 
               <div className="form-floating">
@@ -91,8 +105,8 @@ const Login = () => {
                 {passwordError && <div className="text-danger">{passwordError}</div>}
               </div>
 
-              <div className="alert alert-danger mt-3" style={{ display: passwordError || usernameError ? 'block' : 'none' }}>
-                Invalid username or password
+              <div className="alert alert-danger mt-3" style={{ display: passwordError || emailError ? 'block' : 'none' }}>
+                Invalid email or password
               </div>
 
               <button type="submit" className="btn w-100 main-btn mt-5" disabled={isSubmitting}>
@@ -109,7 +123,6 @@ const Login = () => {
               <img src="/assets/google-icon.png" alt="Google" className="google-icon" />
               Login with Google
             </button>
-
           </div>
         </div>
       </div>

@@ -1,9 +1,21 @@
+import { useState, useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 import './navbar.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { NavLink } from 'react-router-dom';
+import { auth } from '../../firebase/firebase';  // Ganti dengan path yang sesuai
 
 const Navbar = () => {
-  // Fungsi untuk menutup offcanvas secara manual
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   const handleCloseOffcanvas = () => {
     const offcanvasEl = document.getElementById('bdNavbar');
     if (offcanvasEl && window.bootstrap) {
@@ -12,6 +24,16 @@ const Navbar = () => {
         offcanvasInstance.hide();
       }
     }
+  };
+
+  const handleLogout = () => {
+    signOut(auth)
+      .then(() => {
+        // Redirect or update state after successful sign out
+      })
+      .catch((error) => {
+        console.error("Error signing out:", error);
+      });
   };
 
   return (
@@ -104,24 +126,37 @@ const Navbar = () => {
                     MyBooks
                   </NavLink>
                 </li>
-                <li className="nav-item">
-                  <NavLink
-                    to="/login"
-                    className="signin-btn pt-3 pb-3 pe-4 ps-4"
-                    onClick={handleCloseOffcanvas}
-                  >
-                    Sign In
-                  </NavLink>
-                </li>
-                <li className="nav-item">
-                  <NavLink
-                    to="/regist"
-                    className="signup-btn pt-3 pb-3 pe-4 ps-4"
-                    onClick={handleCloseOffcanvas}
-                  >
-                    Sign Up
-                  </NavLink>
-                </li>
+                {user ? (
+                  <li className="nav-item">
+                    <button
+                      className="btn logout-btn"
+                      onClick={handleLogout}
+                    >
+                      LOG OUT
+                    </button>
+                  </li>
+                ) : (
+                  <>
+                    <li className="nav-item">
+                      <NavLink
+                        to="/login"
+                        className="signin-btn pt-3 pb-3 pe-4 ps-4"
+                        onClick={handleCloseOffcanvas}
+                      >
+                        Sign In
+                      </NavLink>
+                    </li>
+                    <li className="nav-item">
+                      <NavLink
+                        to="/regist"
+                        className="signup-btn pt-3 pb-3 pe-4 ps-4"
+                        onClick={handleCloseOffcanvas}
+                      >
+                        Sign Up
+                      </NavLink>
+                    </li>
+                  </>
+                )}
               </ul>
             </div>
           </div>
