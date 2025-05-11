@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
 import { Link } from 'react-router-dom';
-import './forum.css'; // pastikan file CSS-nya diimpor
+import './forum.css';
 
 function Forum() {
   const [forums, setForums] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 5;
 
   useEffect(() => {
     const fetchForums = async () => {
@@ -13,9 +15,29 @@ function Forum() {
       const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setForums(data);
     };
-
     fetchForums();
   }, []);
+
+  const totalPages = Math.ceil(forums.length / pageSize);
+  const displayedForums = forums.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const generatePageNumbers = () => {
+    const pages = [];
+    for (
+      let i = Math.max(2, currentPage - 2);
+      i <= Math.min(currentPage + 2, totalPages - 1);
+      i++
+    ) {
+      pages.push(i);
+    }
+    return pages;
+  };
 
   return (
     <section id="forum-main" className="position-relative padding-large forum-main">
@@ -43,7 +65,7 @@ function Forum() {
         </div>
 
         <div className="bottom-discuss">
-          {forums.map(forum => (
+          {displayedForums.map(forum => (
             <div className="card mb-3 border shadow-sm" key={forum.id}>
               <div className="card-body">
                 <div className="d-flex align-items-center mb-3">
@@ -88,6 +110,56 @@ function Forum() {
             </div>
           ))}
         </div>
+
+        {/* Pagination */}
+        <nav aria-label="Page navigation example" style={{ marginTop: '32px' }}>
+          <ul className="pagination justify-content-center">
+            {/* Previous */}
+            <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+              <button className="page-link" onClick={() => handlePageChange(currentPage - 1)}>Prev</button>
+            </li>
+
+            {/* First Page */}
+            <li className={`page-item ${currentPage === 1 ? 'active' : ''}`}>
+              <button className="page-link" onClick={() => handlePageChange(1)}>1</button>
+            </li>
+
+            {/* ... */}
+            {currentPage > 4 && (
+              <li className="page-item disabled">
+                <span className="page-link">...</span>
+              </li>
+            )}
+
+            {/* Middle Pages */}
+            {generatePageNumbers().map((page) => (
+              <li key={page} className={`page-item ${currentPage === page ? 'active' : ''}`}>
+                <button className="page-link" onClick={() => handlePageChange(page)}>{page}</button>
+              </li>
+            ))}
+
+            {/* ... */}
+            {currentPage < totalPages - 3 && (
+              <li className="page-item disabled">
+                <span className="page-link">...</span>
+              </li>
+            )}
+
+            {/* Last Page */}
+            {totalPages > 1 && (
+              <li className={`page-item ${currentPage === totalPages ? 'active' : ''}`}>
+                <button className="page-link" onClick={() => handlePageChange(totalPages)}>
+                  {totalPages}
+                </button>
+              </li>
+            )}
+
+            {/* Next */}
+            <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+              <button className="page-link" onClick={() => handlePageChange(currentPage + 1)}>Next</button>
+            </li>
+          </ul>
+        </nav>
       </div>
     </section>
   );

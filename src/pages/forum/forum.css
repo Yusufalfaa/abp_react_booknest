@@ -186,3 +186,85 @@
   text-align: left;
 }
 
+/*--------------------------------------------------------------
+/** 7. PAGINATION STRUCTURE
+--------------------------------------------------------------*/
+
+/* General Pagination Layout */
+.pagination {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  justify-content: center;
+  gap: 4px;
+}
+
+/* Previous Button (Disabled) */
+.page-item.disabled.previous .page-link {
+  background-color: var(--gray-color-500);
+  color: var(--gray-color-800);
+  pointer-events: none;
+  border: 1px solid var(--gray-color-500);
+  padding: 6px 8px;
+  border-radius: 4px;
+  transition: none;
+}
+
+/* Active Page Button */
+.page-item.active .page-link {
+  background-color: var(--primary-color) !important;
+  color: var(--white-color) !important;
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+  padding: 6px 8px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Clickable Normal Page Buttons */
+.page-item:not(.disabled) .page-link {
+  color: var(--primary-color);
+  background-color: var(--white-color);
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+  padding: 6px 8px;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Hover Effect for Clickable Page Buttons */
+.page-item:not(.disabled) .page-link:hover {
+  background-color: var(--primary-color);
+  color: var(--white-color);
+}
+
+/* Other Disabled Buttons */
+.page-item.disabled .page-link,
+.page-item.disabled span {
+  background-color: var(--gray-color-500);
+  color: var(--gray-color-800);
+  pointer-events: none;
+  border: 1px solid var(--gray-color-500);
+  padding: 6px 8px;
+  border-radius: 4px;
+  transition: none;
+}
+
+/* Page Link Styling */
+.page-link {
+  text-decoration: none;
+  cursor: pointer;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: var(--body-font);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .page-link {
+    padding: 4px 6px;
+  }
+  .pagination {
+    gap: 2px;
+  }
+}
