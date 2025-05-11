@@ -17,18 +17,15 @@ import Reply from './pages/reply/reply';
 function App() {
   return (
     <div className="App">
-      <Navbar />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/allbooks" element={<AllBooks />} />
-        <Route path="/forum" element={<Forum />} />
-        <Route path="/mybooks" element={<MyBooks />} />
+        <Route path="/" element={<><Navbar /><Home /><Footer /><FloatingFAQButton /></>} />
+        <Route path="/allbooks" element={<><Navbar /><AllBooks /><Footer /><FloatingFAQButton /></>} />
+        <Route path="/forum" element={<><Navbar /><Forum /><Footer /><FloatingFAQButton /></>} />
+        <Route path="/mybooks" element={<><Navbar /><MyBooks /><Footer /><FloatingFAQButton /></>} />
+        <Route path="/discuss" element={<><Navbar /><Reply /><Footer /><FloatingFAQButton /></>} />
         <Route path="/regist" element={<Regist />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/discuss" element={<Reply />} />
       </Routes>
-      <FloatingFAQButton />
-      <Footer />
     </div>
   );
 }

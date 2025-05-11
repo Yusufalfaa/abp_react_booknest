@@ -54,12 +54,13 @@
 
   .site-header {
     background-color: var(--light-color);
-    position: fixed;
+    position: sticky;
     top: 0;
     width: 100%;
     z-index: 10;
     padding: 10px 0;
     transition: background 0.3s ease-out;
+    margin-bottom: 40px;
   }
 
   .navbar {
