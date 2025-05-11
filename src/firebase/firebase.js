@@ -1,9 +1,16 @@
-// src/firebase/firebase.js
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth"; // jika kamu pakai Auth
-import { getFirestore, doc, getDoc, collection, getDocs, query } from "firebase/firestore"; // jika pakai Firestore
+import { getAuth } from "firebase/auth";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  collection,
+  getDocs,
+  query,
+  where // ⬅️ Tambahkan ini
+} from "firebase/firestore";
 
-// Your web app's Firebase configuration
+// Firebase configuration
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
   authDomain: process.env.REACT_APP_AUTH_DOMAIN,
@@ -15,9 +22,8 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-
-// Export fitur yang kamu pakai
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-export { auth, db, doc, getDoc, collection, getDocs, query };
+// Export fitur yang kamu pakai
+export { auth, db, doc, getDoc, collection, getDocs, query, where }; // ⬅️ Tambahkan where ke sini

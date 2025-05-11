@@ -12,7 +12,7 @@ import Forum from './pages/forum/forum';
 import MyBooks from './pages/mybooks/mybooks';
 import Regist from './pages/login/regist';
 import Login from './pages/login/login';
-import Reply from './pages/forum/reply';
+import Reply from './pages/reply/reply';
 
 function App() {
   return (
