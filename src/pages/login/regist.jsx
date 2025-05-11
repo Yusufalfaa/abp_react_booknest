@@ -6,7 +6,7 @@ const Register = () => {
       <div className="register-container">
         <div className="content-wrapper">
           {/* Left Section - Form */}
-          <div className="form-section">
+          <div className="form-section-regist">
             {/* Logo moved to the form section */}
             <img src="/assets/BookNest.png" className="logo" alt="Logo" />
             <h2 className="text-center fw-bold mb-4 mt-3">Sign Up</h2>
@@ -37,9 +37,14 @@ const Register = () => {
           </div>
 
           {/* Right Section - Image */}
-          <div className="image-section" style={{ backgroundImage: 'url(/assets/bgbook1.png)' }}>
+          <div className="image-section-regist" style={{ backgroundImage: 'url(/assets/bgbook1.png)' }}>
             <div className="overlay"></div>
-            <button type="button" className="btn-close" onClick={() => window.location.href = '/'}></button>
+            <button
+              type="button"
+              className="btn-close"
+              style={{ filter: 'invert(1) grayscale(100%) brightness(200%)', opacity: 0.8 }}
+              onClick={() => window.location.href = '/'}
+            ></button>
             <h2 className="fw-bold">Welcome!</h2>
             <p className="mt-2 text-center">Please create an account to start</p>
             <p className="mt-5 text-center">Already have an account?</p>

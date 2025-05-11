@@ -23,7 +23,7 @@
   height: calc(100vh - 80px);
   max-width: 900px;
   background-color: #f8f9fa;
-  border-radius: 10px;  /* Radius keseluruhan container */
+  border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -33,7 +33,7 @@
   flex: 1;
 }
 
-.image-section {
+.image-section-regist {
   min-width: 50%;
   display: flex;
   flex-direction: column;
@@ -45,10 +45,10 @@
   background-position: center;
   height: 100%;
   flex-grow: 1;
-  border-radius: 10px 0 0 10px;  /* Radius pada semua sisi gambar */
+  border-radius: 10px;
 }
 
-.image-section .overlay {
+.image-section-regist .overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -58,7 +58,7 @@
   pointer-events: none;
 }
 
-.form-section {
+.form-section-regist {
   width: 50%;
   background-color: #FDFCF8;
   position: relative;
@@ -67,10 +67,10 @@
   flex-direction: column;
   justify-content: center;
   height: auto;
-  border-radius: 0 10px 10px 0;  /* Radius pada sisi kiri form */
+  border-radius: 10px;
 }
 
-.form-section .logo {
+.form-section-regist .logo {
   position: absolute;
   top: 20px;
   left: 20px;
@@ -120,29 +120,29 @@
     flex-direction: column;
   }
 
-  .image-section {
+  .image-section-regist {
     width: 100%;
     min-height: 250px;
-    border-radius: 10px 10px 0 0; /* Radius di seluruh sisi gambar */
+    border-radius: 10px;
     padding: 30px 20px;
     text-align: center;
   }
 
-  .image-section h2,
-  .image-section p {
+  .image-section-regist h2,
+  .image-section-regist p {
     z-index: 2;
   }
 
-  .image-section .logo {
+  .image-section-regist .logo {
     position: static;
     margin-bottom: 10px;
     width: 120px;
     z-index: 2;
   }
 
-  .form-section {
+  .form-section-regist {
     width: 100%;
-    border-radius: 10px 10px 0 0; /* Radius di sisi kiri form */
+    border-radius: 10px;
     padding: 30px 20px;
   }
 
@@ -176,24 +176,24 @@
 }
 
 @media (max-width: 576px) {
-  .image-section {
+  .image-section-regist {
     min-height: 200px;
     background-position: center center;
   }
 
-  .image-section h2 {
+  .image-section-regist h2 {
     font-size: 20px;
   }
 
-  .image-section p {
+  .image-section-regist p {
     font-size: 14px;
   }
 
-  .form-section h2 {
+  .form-section-regist h2 {
     font-size: 22px;
   }
 
-  .form-section {
+  .form-section-regist {
     padding: 20px 15px;
   }
 
@@ -216,7 +216,7 @@
     width: 95%;
   }
 
-  .form-section {
+  .form-section-regist {
     padding: 15px 10px;
   }
 
