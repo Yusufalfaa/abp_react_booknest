@@ -3,11 +3,22 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { NavLink } from 'react-router-dom';
 
 const Navbar = () => {
+  // Fungsi untuk menutup offcanvas secara manual
+  const handleCloseOffcanvas = () => {
+    const offcanvasEl = document.getElementById('bdNavbar');
+    if (offcanvasEl && window.bootstrap) {
+      const offcanvasInstance = window.bootstrap.Offcanvas.getInstance(offcanvasEl);
+      if (offcanvasInstance) {
+        offcanvasInstance.hide();
+      }
+    }
+  };
+
   return (
     <header id="header" className="site-header">
       <nav className="navbar navbar-expand-lg py-3">
         <div className="container">
-          <NavLink className="navbar-brand" to="/">
+          <NavLink className="navbar-brand" to="/" onClick={handleCloseOffcanvas}>
             <img
               src="assets/BookNest.png"
               alt="Logo"
@@ -23,10 +34,9 @@ const Navbar = () => {
             aria-expanded="false"
             aria-label="Toggle navigation"
           >
-            <svg className="navbar-icon">
-              <use xlinkHref="#navbar-icon"></use>
-            </svg>
+            <span className="navbar-toggler-icon" />
           </button>
+
           <div
             className="offcanvas offcanvas-end"
             tabIndex="-1"
@@ -34,9 +44,9 @@ const Navbar = () => {
             aria-labelledby="bdNavbarOffcanvasLabel"
           >
             <div className="offcanvas-header px-4 pb-0">
-              <NavLink className="navbar-brand" to="/">
+              <NavLink className="navbar-brand" to="/" onClick={handleCloseOffcanvas}>
                 <img
-                  src="assets/BookNestFix.png"
+                  src="assets/BookNest.png"
                   alt="Logo"
                   className="logo"
                 />
@@ -56,9 +66,10 @@ const Navbar = () => {
                 <li className="nav-item">
                   <NavLink
                     className="nav-link me-4"
-                    exact
+                    exact="true"
                     to="/"
                     activeClassName="active"
+                    onClick={handleCloseOffcanvas}
                   >
                     Home
                   </NavLink>
@@ -68,6 +79,7 @@ const Navbar = () => {
                     className="nav-link me-4"
                     to="/allbooks"
                     activeClassName="active"
+                    onClick={handleCloseOffcanvas}
                   >
                     All Books
                   </NavLink>
@@ -77,6 +89,7 @@ const Navbar = () => {
                     className="nav-link me-4"
                     to="/forum"
                     activeClassName="active"
+                    onClick={handleCloseOffcanvas}
                   >
                     Forum
                   </NavLink>
@@ -86,17 +99,26 @@ const Navbar = () => {
                     className="nav-link me-4"
                     to="/mybooks"
                     activeClassName="active"
+                    onClick={handleCloseOffcanvas}
                   >
                     MyBooks
                   </NavLink>
                 </li>
                 <li className="nav-item">
-                  <NavLink to="/login" className="signin-btn pt-3 pb-3 pe-4 ps-4">
+                  <NavLink
+                    to="/login"
+                    className="signin-btn pt-3 pb-3 pe-4 ps-4"
+                    onClick={handleCloseOffcanvas}
+                  >
                     Sign In
                   </NavLink>
                 </li>
                 <li className="nav-item">
-                  <NavLink to="/regist" className="signup-btn pt-3 pb-3 pe-4 ps-4">
+                  <NavLink
+                    to="/regist"
+                    className="signup-btn pt-3 pb-3 pe-4 ps-4"
+                    onClick={handleCloseOffcanvas}
+                  >
                     Sign Up
                   </NavLink>
                 </li>
