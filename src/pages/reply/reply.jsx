@@ -65,6 +65,9 @@ const ForumDetailPage = () => {
       const replySnap = await getDocs(repliesRef);
       const replyList = replySnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
+      // Sort replies by date (newest to oldest)
+      replyList.sort((a, b) => (b.date?.seconds || 0) - (a.date?.seconds || 0));
+
       setAllReplies(replyList); 
       const totalReplies = replyList.length;
       setTotalPages(Math.ceil(totalReplies / pageSize)); 
@@ -76,6 +79,7 @@ const ForumDetailPage = () => {
 
     if (forumId) fetchReplies();
   }, [forumId, currentPage]);
+
 
   // Submit reply handler
   const handleReplySubmit = async (e) => {
@@ -98,9 +102,14 @@ const ForumDetailPage = () => {
       });
 
       setReplyContent('');
-      // After posting a new reply, fetch all replies again
+
+      // Update the replies list by fetching it again
       const updatedReplies = await fetchUpdatedReplies();
       setReplies(updatedReplies);
+
+      // Directly update the number of replies displayed
+      setAllReplies(prevReplies => [...prevReplies, { content: replyContent, username: user.displayName || user.email || "Anonymous", userId: user.uid, date: serverTimestamp() }]);
+      setTotalPages(Math.ceil(allReplies.length / pageSize)); // Update total pages if needed
 
       showAlert('success', 'Success!', 'Reply successfully posted!');
     } catch (error) {
@@ -120,6 +129,7 @@ const ForumDetailPage = () => {
     const displayedReplies = replyList.slice((currentPage - 1) * pageSize, currentPage * pageSize);
     return displayedReplies;
   };
+
 
   // Handle page change
   const handlePageChange = (page) => {

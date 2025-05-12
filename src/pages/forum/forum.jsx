@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { collection, getDocs, doc, updateDoc, increment } from 'firebase/firestore';
+import { collection, doc, getDocs, updateDoc, increment, onSnapshot } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { auth } from '../../firebase/firebase';
@@ -23,16 +23,21 @@ function Forum() {
   const [showAlert, setShowAlert] = useState(false);
 
   // Fetch forums when the page loads or when the sort parameter changes
+  // Inside your Forum component
   useEffect(() => {
-    const fetchForums = async () => {
-      const querySnapshot = await getDocs(collection(db, 'forums'));
+    const unsubscribe = onSnapshot(collection(db, 'forums'), async (querySnapshot) => {
       let data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-      // Sorting
+      // Fetch the replies count for each forum
+      for (let forum of data) {
+        const repliesSnapshot = await getDocs(collection(db, 'forums', forum.id, 'replies'));
+        forum.replies = repliesSnapshot.size; // Set the number of replies based on subcollection size
+      }
+
+      // Sorting logic
       if (sort === 'popular') {
         data.sort((a, b) => (b.replies || 0) - (a.replies || 0));
       } else {
-        // default: latest
         data.sort((a, b) => {
           const dateA = a.date?.seconds || 0;
           const dateB = b.date?.seconds || 0;
@@ -40,12 +45,11 @@ function Forum() {
         });
       }
 
-      setForums(data);
-      setCurrentPage(1); // Reset pagination to first page
-    };
+      setForums(data); // Update state with the new data
+    });
 
-    fetchForums();
-  }, [sort, location]); // Add location to the dependency array to refetch when navigating back
+    return () => unsubscribe(); // Cleanup the listener when the component unmounts
+  }, [sort]); // Add other dependencies if necessary
 
   // Detect if the user is logged in
   useEffect(() => {
@@ -87,24 +91,20 @@ function Forum() {
   };
 
   const handleNewReply = async (forumId) => {
-    // Assuming the new reply is posted here and we update the reply count
     try {
       const forumRef = doc(db, 'forums', forumId);
 
-      // Increment the replies count field by 1
+      // Increment the replies count field by 1 (if needed, here)
       await updateDoc(forumRef, {
         replies: increment(1)
       });
 
-      // Optionally, refetch the forums list to ensure it reflects updated data
-      const updatedForumsSnapshot = await getDocs(collection(db, 'forums'));
-      const updatedForums = updatedForumsSnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      
-      setForums(updatedForums); // Update the forums list with the new reply count
-
+      // Optimistically update the local state
+      setForums(prevForums =>
+        prevForums.map(forum =>
+          forum.id === forumId ? { ...forum, replies: (forum.replies || 0) + 1 } : forum
+        )
+      );
     } catch (error) {
       console.error("Error updating reply count:", error);
     }
