@@ -1,22 +1,43 @@
 import { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
-import { Link } from 'react-router-dom';
+import { Link, useLocation  } from 'react-router-dom';
+
 import './forum.css';
 
 function Forum() {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const sort = searchParams.get('sort') || 'latest';
+
   const [forums, setForums] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 5;
 
   useEffect(() => {
-    const fetchForums = async () => {
-      const querySnapshot = await getDocs(collection(db, 'forums'));
-      const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setForums(data);
-    };
-    fetchForums();
-  }, []);
+  const fetchForums = async () => {
+    const querySnapshot = await getDocs(collection(db, 'forums'));
+    let data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+    // Sorting
+    if (sort === 'popular') {
+      data.sort((a, b) => (b.replies || 0) - (a.replies || 0));
+    } else {
+      // default: latest
+      data.sort((a, b) => {
+        const dateA = a.date?.seconds || 0;
+        const dateB = b.date?.seconds || 0;
+        return dateB - dateA;
+      });
+    }
+
+    setForums(data);
+    setCurrentPage(1); 
+  };
+
+  fetchForums();
+}, [sort]); 
+
 
   const totalPages = Math.ceil(forums.length / pageSize);
   const displayedForums = forums.slice((currentPage - 1) * pageSize, currentPage * pageSize);
@@ -54,11 +75,17 @@ function Forum() {
             </Link>
           </div>
 
-          <div className="mb-3">
-            <Link to="/forum?sort=popular" className="btn btn-sm me-3 rounded-3">
+          <div className="sort-toggle-wrapper p-1 mb-3 d-inline-flex rounded-3">
+            <Link
+              to="/forum?sort=popular"
+              className={`sort-toggle-button ${sort === 'popular' ? 'active' : ''}`}
+            >
               Popular
             </Link>
-            <Link to="/forum?sort=latest" className="btn btn-sm rounded-3">
+            <Link
+              to="/forum?sort=latest"
+              className={`sort-toggle-button ${sort === 'latest' ? 'active' : ''}`}
+            >
               Latest
             </Link>
           </div>
