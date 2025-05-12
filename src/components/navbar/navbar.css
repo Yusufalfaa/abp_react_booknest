@@ -28,10 +28,8 @@
     
     --bs-btn-font-size: 1rem;
     --star-color: #FF9933;
-}
 
-/* Fonts */
-:root {
+    /* Fonts */
     --body-font           : "Nunito", sans-serif;
     --heading-font        : "Nunito", sans-serif;
 }
@@ -45,11 +43,10 @@
 
 button,
 .nav-link {
-    font-family: 'Nunito', sans-serif;  /* Apply font to buttons and nav links */
-    font-size: 1rem;                    /* Uniform font size */
-    font-weight: 600;                   /* Consistent font weight */
-    text-transform: uppercase;          /* Text in uppercase for buttons */
-    letter-spacing: 0.09em;             /* Spacing between letters */
+    font-family: 'Nunito', sans-serif;
+    font-size: var(--bs-btn-font-size);
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
 }
 
 /*--------------------------------------------------------------
@@ -135,22 +132,22 @@ button,
 .signin-btn,
 .signup-btn,
 .logout-btn {
-  font-family: 'Nunito', sans-serif;
+    font-family: 'Nunito', sans-serif !important;
     font-size: var(--bs-btn-font-size);
     padding: 10px 20px;
     color: var(--white-color);
     border-radius: 30px;
     border: none;
     text-decoration: none;
-    display: inline-flex;  /* Menggunakan flexbox untuk center teks */
-    justify-content: center;  /* Memastikan teks ada di tengah horizontal */
-    align-items: center;  /* Memastikan teks ada di tengah vertikal */
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
     transition: background-color 0.3s ease;
     height: 44px;
 }
 
 .signin-btn {
-    background-color: var(--primary-color); 
+    background-color: var(--primary-color);
 }
 
 .signin-btn:hover {
@@ -158,19 +155,19 @@ button,
 }
 
 .signup-btn {
-    background-color: var(--black-color); 
+    background-color: var(--black-color);
 }
 
 .signup-btn:hover {
-    background-color: var(--accent-color); 
+    background-color: var(--accent-color);
 }
 
 .logout-btn {
-    background-color: var(--black-color); /* Same as sign up button */
+    background-color: var(--black-color);
 }
 
 .logout-btn:hover {
-    background-color: var(--accent-color); /* Same hover effect */
+    background-color: var(--accent-color);
 }
 
 /* OFFCANVAS MENU */
@@ -232,79 +229,16 @@ button,
     z-index: 999;
 }
 
-/* Tombol Log Out di Navbar */
-.navbar .logout-btn {
-    font-size: var(--bs-btn-font-size);
-    padding: 10px 20px;
-    color: var(--white-color);
-    background-color: var(--black-color);
-    border-radius: 30px;
-    border: none;
-    text-decoration: none;
-    display: inline-block;
-    transition: background-color 0.3s ease;
-}
-
-.navbar .logout-btn:hover {
-    background-color: var(--accent-color);
-}
-
-/* Link Sign In */
-.navbar .signin-btn {
-    font-size: var(--bs-btn-font-size);
-    padding: 10px 20px;
-    color: var(--white-color);
-    background-color: var(--primary-color);
-    border-radius: 30px;
-    text-decoration: none;
-    display: inline-flex; /* Menjaga teks terpusat */
-    justify-content: center;
-    align-items: center;
-    transition: background-color 0.3s ease;
-}
-
-.navbar .signin-btn:hover {
-    background-color: var(--accent-color);
-}
-
-/* Link Sign Up */
-.navbar .signup-btn {
-    font-size: var(--bs-btn-font-size);
-    padding: 10px 20px;
-    color: var(--white-color);
-    background-color: var(--black-color);
-    border-radius: 30px;
-    text-decoration: none;
-    display: inline-flex; /* Menjaga teks terpusat */
-    justify-content: center;
-    align-items: center;
-    transition: background-color 0.3s ease;
-}
-
-.navbar .signup-btn:hover {
-    background-color: var(--accent-color);
-}
-
-/* Search Section */
-.search-box {
-  padding: 5px 10px;
-  font-size: 14px;
-}
-
-.search-results {
-  max-height: 200px;
-  overflow-y: auto;
-  list-style: none;
-  width: 200px;
-  text-transform: none;
-}
-
 .search-results li {
-  padding: 5px 8px;
-  cursor: pointer;
+    padding: 5px 8px;
+    cursor: pointer;
 }
 
 .search-results li:hover {
-  background-color: #f0f0f0;
+    background-color: #f0f0f0;
 }
 
+ul, li {
+    padding-left: 0 !important;
+    list-style: none !important;
+}

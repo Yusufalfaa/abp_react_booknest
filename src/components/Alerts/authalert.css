@@ -1,0 +1,22 @@
+.alert-actions {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.alert-actions .btn {
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.alert-actions .btn-secondary {
+  background-color: #f8f9fa;
+  border: 1px solid #ccc;
+}
+
+.alert-actions .btn-danger {
+  background-color: #dc3545;
+  color: white;
+}

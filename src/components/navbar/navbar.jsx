@@ -12,6 +12,8 @@ const Navbar = () => {
   const [queryText, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const searchRef = useRef();
+  const dropdownRef = useRef();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -26,7 +28,13 @@ const Navbar = () => {
         setIsSearchOpen(false);
         setResults([]);
       }
+
+      // Close dropdown if clicked outside
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsDropdownOpen(false);
+      }
     };
+
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
@@ -35,37 +43,31 @@ const Navbar = () => {
     signOut(auth).catch((error) => console.error('Error signing out:', error));
   };
 
-const handleSearch = async (e) => {
-  const val = e.target.value.toLowerCase();  // Hanya mengubah input ke lowercase, tanpa trim()
-  setQuery(val);
+  const handleSearch = async (e) => {
+    const val = e.target.value.toLowerCase();
+    setQuery(val);
 
-  if (val === '') {
-    setResults([]);
-    return;
-  }
+    if (val === '') {
+      setResults([]);
+      return;
+    }
 
-  try {
-    // Ambil semua data buku dari Firestore
-    const querySnapshot = await getDocs(collection(db, 'books'));
+    try {
+      const querySnapshot = await getDocs(collection(db, 'books'));
+      const matchedBooks = [];
+      querySnapshot.forEach((doc) => {
+        const book = doc.data();
+        const bookTitle = book.title.toLowerCase();
 
-    const matchedBooks = [];
-    querySnapshot.forEach((doc) => {
-      const book = doc.data();
-      const bookTitle = book.title.toLowerCase();  // Convert judul buku ke lowercase
-
-      // Cek apakah input ada di dalam judul (case-insensitive)
-      if (bookTitle.includes(val)) {
-        matchedBooks.push({ id: doc.id, ...book });
-      }
-    });
-
-    setResults(matchedBooks);
-  } catch (error) {
-    console.error("Error searching books:", error);
-  }
-};
-
-
+        if (bookTitle.includes(val)) {
+          matchedBooks.push({ id: doc.id, ...book });
+        }
+      });
+      setResults(matchedBooks);
+    } catch (error) {
+      console.error("Error searching books:", error);
+    }
+  };
 
   const handleCloseOffcanvas = () => {
     const offcanvasEl = document.getElementById('bdNavbar');
@@ -114,10 +116,7 @@ const handleSearch = async (e) => {
               />
             </div>
             <div className="offcanvas-body">
-              <ul
-                id="navbar"
-                className="navbar-nav text-uppercase justify-content-start justify-content-lg-start align-items-start align-items-lg-center flex-grow-1"
-              >
+              <ul className="navbar-nav text-uppercase justify-content-start justify-content-lg-start align-items-start flex-grow-1">
                 <li className="nav-item">
                   <NavLink className="nav-link me-4" exact="true" to="/" activeclassname="active" onClick={handleCloseOffcanvas}>
                     Home
@@ -140,7 +139,7 @@ const handleSearch = async (e) => {
                 </li>
 
                 {/* Search + Auth Section */}
-                <div className="d-flex align-items-center ms-lg-auto" style={{ marginLeft: '150px' }} ref={searchRef}>
+                <div className="d-flex align-items-center ms-auto" ref={searchRef}>
                   {/* 🔍 Search Icon */}
                   {!isSearchOpen ? (
                     <button className="btn btn-link text-dark me-3" onClick={() => setIsSearchOpen(true)}>
@@ -180,21 +179,52 @@ const handleSearch = async (e) => {
                     </div>
                   )}
 
-                  {/* Auth Buttons */}
-                  {user ? (
-                    <button className="btn logout-btn" onClick={handleLogout}>
-                      LOG OUT
+                  {/* Dropdown for Auth */}
+                  <div className="relative" ref={dropdownRef}>
+                    <button
+                      className="text-gray-800 hover:text-gray-600"
+                      onClick={() => setIsDropdownOpen(prevState => !prevState)}
+                      aria-expanded={isDropdownOpen ? 'true' : 'false'}
+                    >
+                      <i className="fas fa-user-circle fa-lg"></i> 
                     </button>
-                  ) : (
-                    <>
-                      <NavLink to="/login" className="signin-btn pt-3 pb-3 pe-4 ps-4 me-2" onClick={handleCloseOffcanvas}>
-                        Sign In
-                      </NavLink>
-                      <NavLink to="/regist" className="signup-btn pt-3 pb-3 pe-4 ps-4" onClick={handleCloseOffcanvas}>
-                        Sign Up
-                      </NavLink>
-                    </>
-                  )}
+
+                    {isDropdownOpen && (
+                      <ul className="absolute right-0 mt-2 bg-white border border-gray-200 rounded-md shadow-lg w-48">
+                        {user ? (
+                          <li>
+                            <button
+                              className="dropdown-btn-logout block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left"
+                              onClick={handleLogout}
+                            >
+                              Log Out
+                            </button>
+                          </li>
+                        ) : (
+                          <>
+                            <li>
+                              <NavLink
+                                to="/login"
+                                className="dropdown-btn-signin block w-full px-4 py-2 text-left text-gray-800 hover:bg-gray-100"
+                                onClick={handleCloseOffcanvas}
+                              >
+                                Sign In
+                              </NavLink>
+                            </li>
+                            <li>
+                              <NavLink
+                                to="/regist"
+                                className="dropdown-btn-signup block w-full px-4 py-2 text-left text-gray-800 hover:bg-gray-100"
+                                onClick={handleCloseOffcanvas}
+                              >
+                                Sign Up
+                              </NavLink>
+                            </li>
+                          </>
+                        )}
+                      </ul>
+                    )}
+                  </div>
                 </div>
               </ul>
             </div>
