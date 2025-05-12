@@ -51,148 +51,43 @@ button,
     text-transform: uppercase;          /* Text in uppercase for buttons */
     letter-spacing: 0.09em;             /* Spacing between letters */
 }
+.book-detail-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: auto;
+}
 
-/*--------------------------------------------------------------
-/** 7. PAGINATION STRUCTURE
---------------------------------------------------------------*/
-
-/* General Pagination Layout */
-.pagination {
+.book-info {
   display: flex;
-  list-style: none;
-  padding: 0;
-  justify-content: center;
-  gap: 4px;
-}
-
-/* Previous Button (Disabled) */
-.page-item.disabled.previous .page-link {
-  background-color: var(--gray-color-500);
-  color: var(--gray-color-800);
-  pointer-events: none;
-  border: 1px solid var(--gray-color-500);
-  padding: 6px 8px;
-  border-radius: 4px;
-  transition: none;
-}
-
-/* Active Page Button */
-.page-item.active .page-link {
-  background-color: var(--primary-color) !important;
-  color: var(--white-color) !important;
-  border: 1px solid var(--primary-color);
-  border-radius: 4px;
-  padding: 6px 8px;
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-/* Clickable Normal Page Buttons */
-.page-item:not(.disabled) .page-link {
-  color: var(--primary-color);
-  background-color: var(--white-color);
-  border: 1px solid var(--primary-color);
-  border-radius: 4px;
-  padding: 6px 8px;
-  text-decoration: none;
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-/* Hover Effect for Clickable Page Buttons */
-.page-item:not(.disabled) .page-link:hover {
-  background-color: var(--primary-color);
-  color: var(--white-color);
-}
-
-/* Other Disabled Buttons */
-.page-item.disabled .page-link,
-.page-item.disabled span {
-  background-color: var(--gray-color-500);
-  color: var(--gray-color-800);
-  pointer-events: none;
-  border: 1px solid var(--gray-color-500);
-  padding: 6px 8px;
-  border-radius: 4px;
-  transition: none;
-}
-
-/* Page Link Styling */
-.page-link {
-  text-decoration: none;
-  cursor: pointer;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-family: var(--body-font);
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .page-link {
-    padding: 4px 6px;
-  }
-  .pagination {
-    gap: 2px;
-  }
-}
-
-/*--------------------------------------------------------------
-/** 8. BOOK CARD GRID & STYLING
---------------------------------------------------------------*/
-
-.book-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 24px;
-  justify-items: center;
-  margin-top: 32px;
-}
-
-/* Container masing-masing buku */
-.book-card {
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  width: 60px; /* Gambar 50px + padding */
+  gap: 20px;
 }
 
-/* Gambar buku */
-.book-cover {
-  width: 50px;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 4px;
-  box-shadow: var(--bs-box-shadow);
+.book-thumbnail {
+  width: 150px;
+  height: auto;
+  border-radius: 8px;
 }
 
-/* Judul buku */
-.book-title {
-  margin-top: 6px;
-  font-size: 0.75rem;
-  text-align: center;
-  height: 24px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  color: var(--black-color);
-  font-weight: 600;
-  width: 100%;
+.book-details {
+  max-width: 600px;
 }
 
-/* Responsive Grid */
-@media (max-width: 1024px) {
-  .book-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
+.book-details p {
+  font-size: 1.1em;
+  margin: 8px 0;
 }
 
-@media (max-width: 768px) {
-  .book-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+.book-description {
+  margin-top: 20px;
 }
 
-@media (max-width: 480px) {
-  .book-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.book-description h3 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+.book-description p {
+  font-size: 1em;
+  line-height: 1.6;
 }

@@ -26,20 +26,34 @@ const Navbar = () => {
     return () => unsubscribe();
   }, []);
 
+  // Menutup dropdown ketika klik di luar area dropdown
   useEffect(() => {
-  const handleClickOutside = (event) => {
-    if (searchRef.current && !searchRef.current.contains(event.target)) {
-      setIsSearchOpen(false);
-      setQuery('');
-      setResults([]);
-    }
-  };
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false); // Menutup dropdown
+      }
+    };
 
-  document.addEventListener('mousedown', handleClickOutside);
-  return () => {
-    document.removeEventListener('mousedown', handleClickOutside);
-  };
-}, []);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setIsSearchOpen(false);
+        setQuery('');
+        setResults([]);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
 
   // Bagian handleLogout
@@ -48,30 +62,32 @@ const Navbar = () => {
   };
 
   const handleSearch = async (e) => {
-    const val = e.target.value.toLowerCase();
-    setQuery(val);
+  // Menjaga agar pengguna dapat mengetik dalam uppercase, tetapi kita ubah ke lowercase untuk pencarian
+  const val = e.target.value; // Biarkan input apa adanya, tanpa mengubah ke lowercase langsung
+  setQuery(val); // Set nilai query untuk ditampilkan di input
 
-    if (val === '') {
-      setResults([]);
-      return;
-    }
+  if (val === '') {
+    setResults([]); // Tidak ada hasil jika input kosong
+    return;
+  }
 
-    try {
-      const querySnapshot = await getDocs(collection(db, 'books'));
-      const matchedBooks = [];
-      querySnapshot.forEach((doc) => {
-        const book = doc.data();
-        const bookTitle = book.title.toLowerCase();
+  try {
+    const querySnapshot = await getDocs(collection(db, 'books'));
+    const matchedBooks = [];
+    querySnapshot.forEach((doc) => {
+      const book = doc.data();
+      const bookTitle = book.title.toLowerCase(); // Gunakan lowercase untuk pencarian
 
-        if (bookTitle.includes(val)) {
-          matchedBooks.push({ id: doc.id, ...book });
-        }
-      });
-      setResults(matchedBooks);
-    } catch (error) {
-      console.error("Error searching books:", error);
-    }
-  };
+      if (bookTitle.includes(val.toLowerCase())) { // Lakukan pencarian dengan lowercase
+        matchedBooks.push({ id: doc.id, ...book });
+      }
+    });
+    setResults(matchedBooks); // Update hasil pencarian
+  } catch (error) {
+    console.error("Error searching books:", error);
+  }
+};
+
 
   const handleCloseOffcanvas = () => {
     const offcanvasEl = document.getElementById('bdNavbar');
@@ -104,10 +120,11 @@ const handleLogoutConfirm = () => {
     <header id="header" className="site-header">
       <nav className="navbar navbar-expand-lg py-3">
         <div className="container">
-          <NavLink className="navbar-brand" to="/" onClick={handleCloseOffcanvas}>
-            <img src="assets/BookNest.png" alt="Logo" className="logo" />
-          </NavLink>
-          <button
+            <NavLink className="navbar-brand" to="/" onClick={handleCloseOffcanvas}>
+              <img src={`${process.env.PUBLIC_URL}/assets/BookNest.png`} alt="Logo" className="logo" />
+
+            </NavLink>
+            <button
             className="navbar-toggler d-flex d-lg-none order-3 p-2"
             type="button"
             data-bs-toggle="offcanvas"
@@ -127,7 +144,7 @@ const handleLogoutConfirm = () => {
           >
             <div className="offcanvas-header px-4 pb-0">
               <NavLink className="navbar-brand" to="/" onClick={handleCloseOffcanvas}>
-                <img src="assets/BookNest.png" alt="Logo" className="logo" />
+                <img src={`${process.env.PUBLIC_URL}/assets/BookNest.png`} alt="Logo" className="logo" />
               </NavLink>
               <button
                 type="button"
@@ -288,8 +305,7 @@ const handleLogoutConfirm = () => {
           title="Success"
           message="You have successfully logged out."
           type="success"
-          onClose={() => setIsSuccessAlertVisible(false)} 
-          duration={3000} 
+          onClose={() => setIsSuccessAlertVisible(false)}
         />
       )}
     </header>

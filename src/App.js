@@ -15,6 +15,8 @@ import Regist from './pages/login/regist';
 import Login from './pages/login/login';
 import Reply from './pages/reply/reply';
 import CreateForum from './pages/forum/createforum';
+import BookDetail from './pages/bookdetail/bookdetail';
+import Profile from './pages/profile/profile';
 
 function App() {
   return (
@@ -28,6 +30,8 @@ function App() {
         <Route path="/discuss" element={<><Navbar /><Reply /><Footer /><FloatingFAQButton /></>} />
         <Route path="/regist" element={<Regist />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/profile" element={<><Navbar /><Profile /><Footer /><FloatingFAQButton /></>} />
+        <Route path="/bookdetail/:id" element={<><Navbar /><BookDetail /><Footer /><FloatingFAQButton /></>} />
       </Routes>
     </div>
   );
