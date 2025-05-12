@@ -26,6 +26,22 @@ const Navbar = () => {
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+  const handleClickOutside = (event) => {
+    if (searchRef.current && !searchRef.current.contains(event.target)) {
+      setIsSearchOpen(false);
+      setQuery('');
+      setResults([]);
+    }
+  };
+
+  document.addEventListener('mousedown', handleClickOutside);
+  return () => {
+    document.removeEventListener('mousedown', handleClickOutside);
+  };
+}, []);
+
+
   // Bagian handleLogout
   const handleLogout = () => {
     setIsAuthAlertVisible(true); // Menampilkan alert ketika tombol logout diklik
@@ -163,7 +179,7 @@ const handleLogoutConfirm = () => {
                       />
                       {results.length > 0 && (
                         <ul className="search-results bg-white shadow-sm border mt-2 rounded p-2 position-absolute" style={{ zIndex: 999 }}>
-                          {results.map((book) => (
+                          {results.map((book, index) => (
                             <li key={book.id}>
                               <NavLink
                                 to={`/bookdetail/${book.id}`}
@@ -177,10 +193,12 @@ const handleLogoutConfirm = () => {
                               >
                                 {book.title}
                               </NavLink>
+                              {index !== 4 && <hr style={{ borderColor: 'var(--primary-color)', margin: '4px 0' }} />} {/* separator */}
                             </li>
                           ))}
                         </ul>
                       )}
+
                     </div>
                   )}
 
