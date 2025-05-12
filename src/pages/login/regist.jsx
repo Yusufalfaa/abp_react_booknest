@@ -72,7 +72,7 @@ const Register = () => {
               </div>
 
               <div className="form-floating mb-4">
-                <input type="password" className="form-control" id="passwordConfirmation" name="passwordConfirmation" placeholder="Confirm Password" required />
+                <input type="password" className="form-control" id="passwordConfirmation" name="passwordConfirmation" placeholder="Password Confirmation" required />
                 <label htmlFor="passwordConfirmation">Password Confirmation</label>
               </div>
 
