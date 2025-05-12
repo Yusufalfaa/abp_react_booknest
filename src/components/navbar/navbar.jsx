@@ -67,15 +67,22 @@ const Navbar = () => {
     }
   };
 
-  const handleLogoutConfirm = () => {
-    signOut(auth).then(() => {
-      console.log("User signed out successfully");
-      setIsAuthAlertVisible(false); // Menutup alert setelah logout
-      setIsSuccessAlertVisible(true); // Menampilkan success alert setelah log out berhasil
-    }).catch((error) => {
-      console.error("Error signing out:", error);
-    });
-  };
+  // Menangani konfirmasi logout
+const handleLogoutConfirm = () => {
+  signOut(auth).then(() => {
+    console.log("User signed out successfully");
+    setIsAuthAlertVisible(false); // Menutup alert setelah logout
+    setIsSuccessAlertVisible(true); // Menampilkan success alert setelah log out berhasil
+
+    // Navigasi ke halaman login setelah logout
+    setTimeout(() => {
+      // Menggunakan `history.push` atau `navigate` untuk navigasi programatik
+      window.location.href = "/login"; // Atau bisa menggunakan useNavigate() dari react-router-dom v6
+    }, 2000); // Delay sebelum navigasi (misalnya 2 detik)
+  }).catch((error) => {
+    console.error("Error signing out:", error);
+  });
+};
 
   return (
     <header id="header" className="site-header">
@@ -190,14 +197,32 @@ const Navbar = () => {
                     {isDropdownOpen && (
                       <ul className="absolute right-0 mt-2 bg-white border border-gray-200 rounded-md shadow-lg w-48">
                         {user ? (
-                          <li>
-                            <button
-                              className="dropdown-btn-logout block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left"
-                              onClick={handleLogout}
-                            >
-                              Log Out
-                            </button>
-                          </li>
+                          <>
+                            {/* Button Profile */}
+                            <li>
+                              <NavLink
+                                to="/profile" // Sesuaikan dengan rute halaman profil Anda
+                                className="dropdown-btn-profile block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left"
+                                onClick={handleCloseOffcanvas}
+                              >
+                                Profile
+                              </NavLink>
+                            </li>
+
+                            {/* Button Log Out */}
+                            <li>
+                              <NavLink
+                                to="/login" // Ganti ke halaman login atau halaman logout yang sesuai
+                                className="dropdown-btn-logout block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left"
+                                onClick={(e) => {
+                                  e.preventDefault(); // Mencegah navigasi langsung
+                                  handleLogout(); // Tampilkan alert logout
+                                }}
+                              >
+                                Log Out
+                              </NavLink>
+                            </li>
+                            </>
                         ) : (
                           <>
                             <li>
