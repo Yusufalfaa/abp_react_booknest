@@ -8,7 +8,9 @@ import {
   collection,
   getDocs,
   query,
-  where // Menambahkan where untuk query
+  where,
+  addDoc,
+  serverTimestamp
 } from "firebase/firestore";
 
 // Firebase configuration
@@ -27,4 +29,4 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 // Export fitur yang kamu pakai
-export { auth, signInWithEmailAndPassword, createUserWithEmailAndPassword  , db, doc, getDoc, setDoc, collection, getDocs, query, where };
+export { auth, signInWithEmailAndPassword, createUserWithEmailAndPassword  , db, doc, getDoc, setDoc, collection, getDocs, query, where, addDoc, serverTimestamp};

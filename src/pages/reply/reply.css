@@ -48,7 +48,7 @@
 .container-top,
 .container-bottom {
   width: 100%;
-  padding: 30px 40px;
+  padding: 30px 0px;
   margin: 0 auto 40px;
   max-width: 1140px;
   text-align: left;
@@ -60,7 +60,8 @@
   border-radius: 8px;
   box-shadow: var(--bs-box-shadow);
   margin-bottom: 30px;
-    text-align: left;
+  text-align: left;
+  padding-left: 10px;
 }
 
 @media (max-width: 768px) {
@@ -185,3 +186,158 @@
 }
 
 
+.reply-wrapper {
+  max-width: 1100px;
+  margin: -24px auto 24px auto; /* Atas agak rapat, bawah agak renggang */
+  padding: 0 12px;
+}
+
+.replies-wrapper {
+  max-width: 1140px;
+  margin: -20px auto 40px auto; /* rapat ke atas (container-top), tapi tetap ada jarak bawah */
+  padding: 0 20px;
+}
+
+.separator-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.separator-inner {
+  display: flex;
+  flex-direction: column; /* ubah jadi vertikal */
+  width: 100%;
+  max-width: 1140px;
+  padding: 0 20px;
+}
+
+.reply-count-text {
+  padding-left: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--black-color);
+  text-align: left;
+}
+
+.custom-separator {
+  height: 1px;
+  background-color: #ccc;
+  border: none;
+  width: 100%;
+}
+
+
+/*--------------------------------------------------------------
+/** 7. PAGINATION STRUCTURE
+--------------------------------------------------------------*/
+
+/* General Pagination Layout */
+.pagination {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  justify-content: center;
+  gap: 4px;
+}
+
+/* Previous Button (Disabled) */
+.page-item.disabled.previous .page-link {
+  background-color: var(--gray-color-500);
+  color: var(--gray-color-800);
+  pointer-events: none;
+  border: 1px solid var(--gray-color-500);
+  padding: 6px 8px;
+  border-radius: 4px;
+  transition: none;
+}
+
+/* Active Page Button */
+.page-item.active .page-link {
+  background-color: var(--primary-color) !important;
+  color: var(--white-color) !important;
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+  padding: 6px 8px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Clickable Normal Page Buttons */
+.page-item:not(.disabled) .page-link {
+  color: var(--primary-color);
+  background-color: var(--white-color);
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+  padding: 6px 8px;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Hover Effect for Clickable Page Buttons */
+.page-item:not(.disabled) .page-link:hover {
+  background-color: var(--primary-color);
+  color: var(--white-color);
+}
+
+/* Other Disabled Buttons */
+.page-item.disabled .page-link,
+.page-item.disabled span {
+  background-color: var(--gray-color-500);
+  color: var(--gray-color-800);
+  pointer-events: none;
+  border: 1px solid var(--gray-color-500);
+  padding: 6px 8px;
+  border-radius: 4px;
+  transition: none;
+}
+
+/* Page Link Styling */
+.page-link {
+  text-decoration: none;
+  cursor: pointer;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: var(--body-font);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .page-link {
+    padding: 4px 6px;
+  }
+  .pagination {
+    gap: 2px;
+  }
+}
+
+/* Responsive Pagination Container */
+.pagination-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 0 16px;
+  overflow-x: hidden;
+}
+
+/* Enable wrapping of pagination items */
+.pagination {
+  flex-wrap: wrap; /* 👈 INI KUNCI AGAR BISA MULTI BARIS */
+  max-width: 100%;
+  justify-content: center;
+  gap: 4px;
+  row-gap: 8px; /* Jarak antar baris */
+}
+
+/* Responsive tweaks for smaller screens */
+@media (max-width: 576px) {
+  .page-link {
+    padding: 4px 6px;
+    font-size: 0.8rem;
+  }
+
+  .pagination {
+    gap: 3px;
+    row-gap: 6px;
+  }
+}

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, doc, updateDoc, increment } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { auth } from '../../firebase/firebase';
@@ -10,18 +10,19 @@ import { Alert } from '../../components/Alerts/alert.jsx';
 import './forum.css';
 
 function Forum() {
-  const location = useLocation();
+  const location = useLocation(); // Get current location (url) for tracking navigation changes
   const searchParams = new URLSearchParams(location.search);
   const sort = searchParams.get('sort') || 'latest';
 
   const [forums, setForums] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const pageSize = 5;
 
   const navigate = useNavigate();
   const [showAlert, setShowAlert] = useState(false);
 
+  // Fetch forums when the page loads or when the sort parameter changes
   useEffect(() => {
     const fetchForums = async () => {
       const querySnapshot = await getDocs(collection(db, 'forums'));
@@ -40,19 +41,19 @@ function Forum() {
       }
 
       setForums(data);
-      setCurrentPage(1); 
+      setCurrentPage(1); // Reset pagination to first page
     };
 
     fetchForums();
-  }, [sort]);
-  
+  }, [sort, location]); // Add location to the dependency array to refetch when navigating back
+
+  // Detect if the user is logged in
   useEffect(() => {
-    // Mengecek apakah pengguna sudah login
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setIsLoggedIn(!!user);
     });
 
-    return () => unsubscribe(); 
+    return () => unsubscribe(); // Cleanup on component unmount
   }, []);
 
   const totalPages = Math.ceil(forums.length / pageSize);
@@ -85,19 +86,42 @@ function Forum() {
     }
   };
 
+  const handleNewReply = async (forumId) => {
+    // Assuming the new reply is posted here and we update the reply count
+    try {
+      const forumRef = doc(db, 'forums', forumId);
+
+      // Increment the replies count field by 1
+      await updateDoc(forumRef, {
+        replies: increment(1)
+      });
+
+      // Optionally, refetch the forums list to ensure it reflects updated data
+      const updatedForumsSnapshot = await getDocs(collection(db, 'forums'));
+      const updatedForums = updatedForumsSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      
+      setForums(updatedForums); // Update the forums list with the new reply count
+
+    } catch (error) {
+      console.error("Error updating reply count:", error);
+    }
+  };
 
   return (
     <section id="forum-main" className="position-relative padding-large forum-main">
       <div className="container">
-          {showAlert && (
-            <Alert 
-              type="warning"
-              title="Warning"
-              message="You must login first to start a discussion!" 
-              duration={2000}
-              onClose={() => setShowAlert(false)}
-            />
-          )}
+        {showAlert && (
+          <Alert 
+            type="warning"
+            title="Warning"
+            message="You must login first to start a discussion!" 
+            duration={2000}
+            onClose={() => setShowAlert(false)}
+          />
+        )}
 
         <div className="top-discuss">
           <div className="section-title d-flex flex-column mb-2">
@@ -106,7 +130,6 @@ function Forum() {
           </div>
 
           <div className="mb-4">
-            {/* Jika belum login, tampilkan pesan atau redirect ke login */}
             {isLoggedIn ? (
               <Link to="/createforum" className="btn btn-sm btn-new-discussion rounded-3">
                 New Discussion
@@ -172,6 +195,7 @@ function Forum() {
                   <Link
                     to={`/discuss?forumId=${forum.id}`}
                     className="btn-link discuss-link p-0 d-flex align-items-center"
+                    onClick={() => handleNewReply(forum.id)}
                   >
                     <span className="reply-count">
                       <i className="bi bi-chat-left-text me-2"></i>
@@ -188,38 +212,32 @@ function Forum() {
         <nav aria-label="Page navigation example" style={{ marginTop: '32px' }}>
           <div className='pagination-wrapper'>
             <ul className="pagination justify-content-center">
-              {/* Previous */}
               <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
                 <button className="page-link" onClick={() => handlePageChange(currentPage - 1)}>Prev</button>
               </li>
 
-              {/* First Page */}
               <li className={`page-item ${currentPage === 1 ? 'active' : ''}`}>
                 <button className="page-link" onClick={() => handlePageChange(1)}>1</button>
               </li>
 
-              {/* ... */}
               {currentPage > 4 && (
                 <li className="page-item disabled">
                   <span className="page-link">...</span>
                 </li>
               )}
 
-              {/* Middle Pages */}
               {generatePageNumbers().map((page) => (
                 <li key={page} className={`page-item ${currentPage === page ? 'active' : ''}`}>
                   <button className="page-link" onClick={() => handlePageChange(page)}>{page}</button>
                 </li>
               ))}
 
-              {/* ... */}
               {currentPage < totalPages - 3 && (
                 <li className="page-item disabled">
                   <span className="page-link">...</span>
                 </li>
               )}
 
-              {/* Last Page */}
               {totalPages > 1 && (
                 <li className={`page-item ${currentPage === totalPages ? 'active' : ''}`}>
                   <button className="page-link" onClick={() => handlePageChange(totalPages)}>
@@ -228,7 +246,6 @@ function Forum() {
                 </li>
               )}
 
-              {/* Next */}
               <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
                 <button className="page-link" onClick={() => handlePageChange(currentPage + 1)}>Next</button>
               </li>
