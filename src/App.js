@@ -4,8 +4,7 @@ import Navbar from './components/navbar/navbar';
 import Footer from './components/footer/footer';
 import FloatingFAQButton from './components/floatingButton/floatingButton';
 
-
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 
 import Home from './pages/home/home';
 import AllBooks from './pages/allbooks/allbooks';
@@ -19,20 +18,37 @@ import BookDetail from './pages/bookdetail/bookdetail';
 import Profile from './pages/profile/profile';
 
 function App() {
+  const location = useLocation();
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/regist';
+
   return (
     <div className="App">
-      <Routes>
-        <Route path="/" element={<><Navbar /><Home /><Footer /><FloatingFAQButton /></>} />
-        <Route path="/allbooks" element={<><Navbar /><AllBooks /><Footer /><FloatingFAQButton /></>} />
-        <Route path="/forum" element={<><Navbar /><Forum /><Footer /><FloatingFAQButton /></>} />
-        <Route path="/createforum" element={<><Navbar /><CreateForum /><Footer /><FloatingFAQButton /></>} />
-        <Route path="/mybooks" element={<><Navbar /><MyBooks /><Footer /><FloatingFAQButton /></>} />
-        <Route path="/discuss" element={<><Navbar /><Reply /><Footer /><FloatingFAQButton /></>} />
-        <Route path="/regist" element={<Regist />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/profile" element={<><Navbar /><Profile /><Footer /><FloatingFAQButton /></>} />
-        <Route path="/bookdetail/:id" element={<><Navbar /><BookDetail /><Footer /><FloatingFAQButton /></>} />
-      </Routes>
+      {isAuthPage ? (
+        // Halaman Login dan Regist TIDAK ada layout
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/regist" element={<Regist />} />
+        </Routes>
+      ) : (
+        // Halaman lainnya pakai layout dengan Navbar dan Footer
+        <div className="page-wrapper">
+          <Navbar />
+          <div className="content">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/allbooks" element={<AllBooks />} />
+              <Route path="/forum" element={<Forum />} />
+              <Route path="/createforum" element={<CreateForum />} />
+              <Route path="/mybooks" element={<MyBooks />} />
+              <Route path="/discuss" element={<Reply />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/bookdetail/:id" element={<BookDetail />} />
+            </Routes>
+          </div>
+          <Footer />
+          <FloatingFAQButton />
+        </div>
+      )}
     </div>
   );
 }
