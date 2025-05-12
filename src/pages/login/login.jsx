@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import './login.css';
 import { auth, signInWithEmailAndPassword } from '../../firebase/firebase';  // Adjust path as needed
 import { useNavigate } from 'react-router-dom';  // Replaced useHistory with useNavigate
+import { Alert } from '../../components/Alerts/alert';  // Import Alert component
 
 const Login = () => {
   const [successAlert, setSuccessAlert] = useState(false);
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccessAlertVisible, setIsSuccessAlertVisible] = useState(false); // State for success alert
   const navigate = useNavigate(); // Use navigate instead of history
 
   useEffect(() => {
@@ -46,8 +48,13 @@ const Login = () => {
         // Firebase authentication logic for email and password
         await signInWithEmailAndPassword(auth, email, password);
         setIsSubmitting(false);
-        // Redirect to dashboard or home page upon successful login
-        navigate('/'); // Navigate to the home page or dashboard after successful login
+        // Show success alert after successful login
+        setIsSuccessAlertVisible(true);
+        // Wait for alert to disappear before navigating
+        setTimeout(() => {
+          setIsSuccessAlertVisible(false);  // Hide the alert
+          navigate('/'); // Navigate to the home page or dashboard after alert is hidden
+        }, 3000); // Set the same timeout as the alert duration
       } catch (error) {
         setIsSubmitting(false);
         // Handle error
@@ -59,7 +66,23 @@ const Login = () => {
 
   return (
     <div className="login-body">
-      {successAlert && <div className="success-alert">Registration successful! Please sign in to start.</div>}
+      {/* Render the Success Alert after login */}
+      {isSuccessAlertVisible && (
+        <Alert
+          title="Success"
+          message="Login successful! Welcome back."
+          type="success"
+          onClose={() => setIsSuccessAlertVisible(false)}
+          duration={3000}
+        />
+      )}
+
+      {/* Render the Success Alert for registration */}
+      {successAlert && (
+        <div className="success-alert">
+          Registration successful! Please sign in to start.
+        </div>
+      )}
 
       <div className="login-container">
         <div className="content-wrapper">

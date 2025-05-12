@@ -3,6 +3,8 @@ import { NavLink } from 'react-router-dom';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { collection, getDocs } from 'firebase/firestore';
 import { auth, db } from '../../firebase/firebase';
+import { AuthAlert } from '../Alerts/authalert'; // Mengimpor AuthAlert
+import { Alert } from '../Alerts/alert'; // Mengimpor Alert biasa
 import './navbar.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -14,6 +16,8 @@ const Navbar = () => {
   const searchRef = useRef();
   const dropdownRef = useRef();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isAuthAlertVisible, setIsAuthAlertVisible] = useState(false); // State untuk AuthAlert
+  const [isSuccessAlertVisible, setIsSuccessAlertVisible] = useState(false); // State untuk Success Alert
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -22,25 +26,9 @@ const Navbar = () => {
     return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (searchRef.current && !searchRef.current.contains(e.target)) {
-        setIsSearchOpen(false);
-        setResults([]);
-      }
-
-      // Close dropdown if clicked outside
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setIsDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
+  // Bagian handleLogout
   const handleLogout = () => {
-    signOut(auth).catch((error) => console.error('Error signing out:', error));
+    setIsAuthAlertVisible(true); // Menampilkan alert ketika tombol logout diklik
   };
 
   const handleSearch = async (e) => {
@@ -77,6 +65,16 @@ const Navbar = () => {
         offcanvasInstance.hide();
       }
     }
+  };
+
+  const handleLogoutConfirm = () => {
+    signOut(auth).then(() => {
+      console.log("User signed out successfully");
+      setIsAuthAlertVisible(false); // Menutup alert setelah logout
+      setIsSuccessAlertVisible(true); // Menampilkan success alert setelah log out berhasil
+    }).catch((error) => {
+      console.error("Error signing out:", error);
+    });
   };
 
   return (
@@ -231,6 +229,26 @@ const Navbar = () => {
           </div>
         </div>
       </nav>
+
+      {/* Render the AuthAlert component when visible */}
+      {isAuthAlertVisible && (
+        <AuthAlert
+          isVisible={isAuthAlertVisible}
+          onClose={() => setIsAuthAlertVisible(false)}
+          onConfirm={handleLogoutConfirm}
+        />
+      )}
+
+      {/* Render the Success Alert after logout */}
+      {isSuccessAlertVisible && (
+        <Alert
+          title="Success"
+          message="You have successfully logged out."
+          type="success"
+          onClose={() => setIsSuccessAlertVisible(false)} 
+          duration={3000} 
+        />
+      )}
     </header>
   );
 };
