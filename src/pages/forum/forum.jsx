@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
-import { Link, useLocation  } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { auth } from '../../firebase/firebase'; // Import auth dari Firebase
+import { onAuthStateChanged } from 'firebase/auth'; // Import untuk cek status login
 
 import './forum.css';
 
@@ -12,32 +14,43 @@ function Forum() {
 
   const [forums, setForums] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // State untuk status login
   const pageSize = 5;
 
+  const navigate = useNavigate(); // Hook untuk navigasi
+
   useEffect(() => {
-  const fetchForums = async () => {
-    const querySnapshot = await getDocs(collection(db, 'forums'));
-    let data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const fetchForums = async () => {
+      const querySnapshot = await getDocs(collection(db, 'forums'));
+      let data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-    // Sorting
-    if (sort === 'popular') {
-      data.sort((a, b) => (b.replies || 0) - (a.replies || 0));
-    } else {
-      // default: latest
-      data.sort((a, b) => {
-        const dateA = a.date?.seconds || 0;
-        const dateB = b.date?.seconds || 0;
-        return dateB - dateA;
-      });
-    }
+      // Sorting
+      if (sort === 'popular') {
+        data.sort((a, b) => (b.replies || 0) - (a.replies || 0));
+      } else {
+        // default: latest
+        data.sort((a, b) => {
+          const dateA = a.date?.seconds || 0;
+          const dateB = b.date?.seconds || 0;
+          return dateB - dateA;
+        });
+      }
 
-    setForums(data);
-    setCurrentPage(1); 
-  };
+      setForums(data);
+      setCurrentPage(1); 
+    };
 
-  fetchForums();
-}, [sort]); 
+    fetchForums();
+  }, [sort]);
 
+  useEffect(() => {
+    // Mengecek apakah pengguna sudah login
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsLoggedIn(!!user); // Jika ada user, setIsLoggedIn ke true
+    });
+
+    return () => unsubscribe(); // Cleanup saat komponen dibersihkan
+  }, []);
 
   const totalPages = Math.ceil(forums.length / pageSize);
   const displayedForums = forums.slice((currentPage - 1) * pageSize, currentPage * pageSize);
@@ -60,6 +73,13 @@ function Forum() {
     return pages;
   };
 
+  const handleNewDiscussionClick = () => {
+    if (!isLoggedIn) {
+      alert('You must be logged in to create a new discussion.');
+      navigate('/login'); // Redirect ke halaman login
+    }
+  };
+
   return (
     <section id="forum-main" className="position-relative padding-large forum-main">
       <div className="container">
@@ -70,9 +90,19 @@ function Forum() {
           </div>
 
           <div className="mb-4">
-            <Link to="/newForum" className="btn btn-sm btn-new-discussion rounded-3">
-              New Discussion
-            </Link>
+            {/* Jika belum login, tampilkan pesan atau redirect ke login */}
+            {isLoggedIn ? (
+              <Link to="/createforum" className="btn btn-sm btn-new-discussion rounded-3">
+                New Discussion
+              </Link>
+            ) : (
+              <button 
+                className="btn btn-sm btn-new-discussion rounded-3"
+                onClick={handleNewDiscussionClick}
+              >
+                New Discussion
+              </button>
+            )}
           </div>
 
           <div className="sort-toggle-wrapper p-1 mb-3 d-inline-flex rounded-3">

@@ -14,6 +14,7 @@ import MyBooks from './pages/mybooks/mybooks';
 import Regist from './pages/login/regist';
 import Login from './pages/login/login';
 import Reply from './pages/reply/reply';
+import CreateForum from './pages/forum/createforum';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/" element={<><Navbar /><Home /><Footer /><FloatingFAQButton /></>} />
         <Route path="/allbooks" element={<><Navbar /><AllBooks /><Footer /><FloatingFAQButton /></>} />
         <Route path="/forum" element={<><Navbar /><Forum /><Footer /><FloatingFAQButton /></>} />
+        <Route path="/createforum" element={<><Navbar /><CreateForum /><Footer /><FloatingFAQButton /></>} />
         <Route path="/mybooks" element={<><Navbar /><MyBooks /><Footer /><FloatingFAQButton /></>} />
         <Route path="/discuss" element={<><Navbar /><Reply /><Footer /><FloatingFAQButton /></>} />
         <Route path="/regist" element={<Regist />} />
