@@ -4,11 +4,14 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
+import { Alert } from '../../components/Alerts/alert';
 
 function CreateForum() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [user, setUser] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [alertConfig, setAlertConfig] = useState({ show: false, type: '', title: '', message: '' });
 
   const maxContentLength = 2500;
   const maxTitleLength = 100;
@@ -22,18 +25,27 @@ function CreateForum() {
     return () => unsubscribe();
   }, []);
 
+  const showAlert = (type, title, message, duration = 2000) => {
+    setAlertConfig({ show: true, type, title, message });
+    setTimeout(() => {
+      setAlertConfig({ show: false, type: '', title: '', message: '' });
+    }, duration);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!user) {
-      alert('You must be logged in to create a forum.');
+      showAlert('warning', 'Warning', 'You must be logged in to create a forum.');
       return;
     }
 
     if (content.trim().length < 10) {
-      alert('Content must be at least 10 characters.');
+      showAlert('warning', 'Content Too Short', 'Content must be at least 10 characters.');
       return;
     }
+
+    setIsSubmitting(true);
 
     const forumData = {
       title,
@@ -46,12 +58,18 @@ function CreateForum() {
 
     try {
       await addDoc(collection(db, 'forums'), forumData);
-      alert('Forum successfully created!');
+      showAlert('success', 'Success!', 'Forum successfully created!');
       setTitle('');
       setContent('');
-      navigate('/forum'); 
+
+      setTimeout(() => {
+        navigate('/forum');
+      }, 2000);
     } catch (error) {
       console.error('Error creating forum:', error);
+      showAlert('error', 'Error', 'Failed to create forum. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -62,6 +80,16 @@ function CreateForum() {
           <h3 className="mb-1">Let's Talk</h3>
           <p>Sharing, find support, and connect with the community</p>
         </div>
+
+        {/* Alert Pop-up */}
+        {alertConfig.show && (
+          <Alert
+            type={alertConfig.type}
+            title={alertConfig.title}
+            message={alertConfig.message}
+          />
+        )}
+
         <form onSubmit={handleSubmit}>
           <div className="title card p-3 shadow bg-white rounded mb-3">
             <input
@@ -91,8 +119,12 @@ function CreateForum() {
             </div>
             <div className="d-flex justify-content-end align-items-end gap-2">
               <div className="char-count">{content.length}/{maxContentLength}</div>
-              <button type="submit" className="btn btn-sm rounded-3 btn-primary-custom">
-                Send
+              <button
+                type="submit"
+                className="btn btn-sm rounded-3 btn-primary-custom"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Sending...' : 'Send'}
               </button>
             </div>
           </div>

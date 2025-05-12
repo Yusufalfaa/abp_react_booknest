@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { auth } from '../../firebase/firebase'; // Import auth dari Firebase
-import { onAuthStateChanged } from 'firebase/auth'; // Import untuk cek status login
+import { auth } from '../../firebase/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+
+import { Alert } from '../../components/Alerts/alert.jsx';
 
 import './forum.css';
 
@@ -14,10 +16,11 @@ function Forum() {
 
   const [forums, setForums] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // State untuk status login
+  const [isLoggedIn, setIsLoggedIn] = useState(false); 
   const pageSize = 5;
 
-  const navigate = useNavigate(); // Hook untuk navigasi
+  const navigate = useNavigate();
+  const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {
     const fetchForums = async () => {
@@ -42,14 +45,14 @@ function Forum() {
 
     fetchForums();
   }, [sort]);
-
+  
   useEffect(() => {
     // Mengecek apakah pengguna sudah login
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setIsLoggedIn(!!user); // Jika ada user, setIsLoggedIn ke true
+      setIsLoggedIn(!!user);
     });
 
-    return () => unsubscribe(); // Cleanup saat komponen dibersihkan
+    return () => unsubscribe(); 
   }, []);
 
   const totalPages = Math.ceil(forums.length / pageSize);
@@ -75,14 +78,27 @@ function Forum() {
 
   const handleNewDiscussionClick = () => {
     if (!isLoggedIn) {
-      alert('You must be logged in to create a new discussion.');
-      navigate('/login'); // Redirect ke halaman login
+      setShowAlert(true);
+      setTimeout(() => {
+        navigate('/login'); // Setelah alert ditutup, arahkan ke login
+      }, 2000); // Waktu delay sebelum navigasi
     }
   };
+
 
   return (
     <section id="forum-main" className="position-relative padding-large forum-main">
       <div className="container">
+          {showAlert && (
+            <Alert 
+              type="warning"
+              title="Warning"
+              message="You must login first to start a discussion!" 
+              duration={2000}
+              onClose={() => setShowAlert(false)}
+            />
+          )}
+
         <div className="top-discuss">
           <div className="section-title d-flex flex-column mb-2">
             <h3 className="mb-1 mt-3">Let's Talk</h3>
