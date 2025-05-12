@@ -3,8 +3,8 @@ import { NavLink } from 'react-router-dom';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { collection, getDocs } from 'firebase/firestore';
 import { auth, db } from '../../firebase/firebase';
-import { AuthAlert } from '../Alerts/authalert'; // Mengimpor AuthAlert
-import { Alert } from '../Alerts/alert'; // Mengimpor Alert biasa
+import { AuthAlert } from '../Alerts/authalert'; 
+import { Alert } from '../Alerts/alert';
 import './navbar.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -16,8 +16,8 @@ const Navbar = () => {
   const searchRef = useRef();
   const dropdownRef = useRef();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isAuthAlertVisible, setIsAuthAlertVisible] = useState(false); // State untuk AuthAlert
-  const [isSuccessAlertVisible, setIsSuccessAlertVisible] = useState(false); // State untuk Success Alert
+  const [isAuthAlertVisible, setIsAuthAlertVisible] = useState(false); 
+  const [isSuccessAlertVisible, setIsSuccessAlertVisible] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -30,7 +30,7 @@ const Navbar = () => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsDropdownOpen(false); // Menutup dropdown
+        setIsDropdownOpen(false); 
       }
     };
 
@@ -58,16 +58,16 @@ const Navbar = () => {
 
   // Bagian handleLogout
   const handleLogout = () => {
-    setIsAuthAlertVisible(true); // Menampilkan alert ketika tombol logout diklik
+    setIsAuthAlertVisible(true); 
   };
 
   const handleSearch = async (e) => {
-  // Menjaga agar pengguna dapat mengetik dalam uppercase, tetapi kita ubah ke lowercase untuk pencarian
-  const val = e.target.value; // Biarkan input apa adanya, tanpa mengubah ke lowercase langsung
-  setQuery(val); // Set nilai query untuk ditampilkan di input
+
+  const val = e.target.value; 
+  setQuery(val); 
 
   if (val === '') {
-    setResults([]); // Tidak ada hasil jika input kosong
+    setResults([]); 
     return;
   }
 
@@ -76,13 +76,13 @@ const Navbar = () => {
     const matchedBooks = [];
     querySnapshot.forEach((doc) => {
       const book = doc.data();
-      const bookTitle = book.title.toLowerCase(); // Gunakan lowercase untuk pencarian
+      const bookTitle = book.title.toLowerCase(); 
 
-      if (bookTitle.includes(val.toLowerCase())) { // Lakukan pencarian dengan lowercase
+      if (bookTitle.includes(val.toLowerCase())) {
         matchedBooks.push({ id: doc.id, ...book });
       }
     });
-    setResults(matchedBooks); // Update hasil pencarian
+    setResults(matchedBooks);
   } catch (error) {
     console.error("Error searching books:", error);
   }
@@ -103,14 +103,13 @@ const Navbar = () => {
 const handleLogoutConfirm = () => {
   signOut(auth).then(() => {
     console.log("User signed out successfully");
-    setIsAuthAlertVisible(false); // Menutup alert setelah logout
-    setIsSuccessAlertVisible(true); // Menampilkan success alert setelah log out berhasil
+    setIsAuthAlertVisible(false); 
+    setIsSuccessAlertVisible(true);
 
     // Navigasi ke halaman login setelah logout
     setTimeout(() => {
-      // Menggunakan `history.push` atau `navigate` untuk navigasi programatik
-      window.location.href = "/login"; // Atau bisa menggunakan useNavigate() dari react-router-dom v6
-    }, 2000); // Delay sebelum navigasi (misalnya 2 detik)
+      window.location.href = "/login"; 
+    }, 2000); 
   }).catch((error) => {
     console.error("Error signing out:", error);
   });
@@ -236,9 +235,12 @@ const handleLogoutConfirm = () => {
                             {/* Button Profile */}
                             <li>
                               <NavLink
-                                to="/profile" // Sesuaikan dengan rute halaman profil Anda
+                                to="/profile" 
                                 className="dropdown-btn-profile block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left"
-                                onClick={handleCloseOffcanvas}
+                                  onClick={() => {
+                                    handleCloseOffcanvas();
+                                    setIsDropdownOpen(false);
+                                  }}
                               >
                                 Profile
                               </NavLink>
@@ -247,11 +249,11 @@ const handleLogoutConfirm = () => {
                             {/* Button Log Out */}
                             <li>
                               <NavLink
-                                to="/login" // Ganti ke halaman login atau halaman logout yang sesuai
+                                to="/login" 
                                 className="dropdown-btn-logout block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left"
                                 onClick={(e) => {
-                                  e.preventDefault(); // Mencegah navigasi langsung
-                                  handleLogout(); // Tampilkan alert logout
+                                  e.preventDefault(); 
+                                  handleLogout(); 
                                 }}
                               >
                                 Log Out

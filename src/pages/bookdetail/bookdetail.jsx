@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom'; // Untuk mendapatkan ID dari URL
 import { doc, getDoc } from 'firebase/firestore'; 
 import { db } from '../../firebase/firebase'; // Pastikan Firebase sudah dikonfigurasi di sini
+import { Helmet } from 'react-helmet';
 
 const BookDetail = () => {
+  
   const { id } = useParams(); // Mendapatkan ID buku dari URL params
   const [book, setBook] = useState(null);
 
@@ -31,7 +33,11 @@ const BookDetail = () => {
   }
 
   return (
+
     <div className="book-detail-container">
+      <Helmet>
+        <title>{book.title} - BookNest</title>
+      </Helmet>
       <h1>{book.title}</h1>
       <div className="book-info">
         <img src={book.thumbnail} alt={book.title} className="book-thumbnail" />

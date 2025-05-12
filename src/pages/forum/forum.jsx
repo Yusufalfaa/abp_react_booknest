@@ -10,6 +10,12 @@ import { Alert } from '../../components/Alerts/alert.jsx';
 import './forum.css';
 
 function Forum() {
+
+  useEffect(() => {
+    document.title = "Community Forum - BookNest";
+  }, []);
+
+
   const location = useLocation(); // Get current location (url) for tracking navigation changes
   const searchParams = new URLSearchParams(location.search);
   const sort = searchParams.get('sort') || 'latest';

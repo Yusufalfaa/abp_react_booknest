@@ -7,6 +7,11 @@ import { useNavigate } from 'react-router-dom';
 import { Alert } from '../../components/Alerts/alert';
 
 function CreateForum() {
+  useEffect(() => {
+    document.title = "Create Forum - BookNest";
+  }, []);
+
+
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [user, setUser] = useState(null);

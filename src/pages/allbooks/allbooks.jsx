@@ -5,6 +5,12 @@ import { db } from '../../firebase/firebase';
 import './allbooks.css';
 
 const AllBooks = ({ selectedGenre }) => {
+
+  useEffect(() => {
+    document.title = "All Books Collection - BookNest";
+  }, []);
+
+
   const [books, setBooks] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 12;

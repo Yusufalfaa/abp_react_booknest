@@ -7,6 +7,11 @@ import './reply.css';
 import { Alert } from "../../components/Alerts/alert.jsx";
 
 const ForumDetailPage = () => {
+  useEffect(() => {
+    document.title = "Reply to Discussion - BookNest";
+  }, []);
+
+
   const [forum, setForum] = useState(null);
   const [replies, setReplies] = useState([]);
   const [allReplies, setAllReplies] = useState([]);
