@@ -1,16 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import './login.css';
-import { auth, signInWithEmailAndPassword } from '../../firebase/firebase';  // Adjust path as needed
-import { useNavigate } from 'react-router-dom';  // Replaced useHistory with useNavigate
-import { Alert } from '../../components/Alerts/alert';  // Import Alert component
+import { 
+  auth, 
+  signInWithEmailAndPassword, 
+  setPersistence, 
+  browserSessionPersistence, 
+  GoogleAuthProvider, 
+  signInWithPopup,
+  db,
+  doc,
+  getDoc,
+  setDoc,
+  serverTimestamp
+} from '../../firebase/firebase';
+import { useNavigate } from 'react-router-dom';
+import { Alert } from '../../components/Alerts/alert';
 
 const Login = () => {
   const [successAlert, setSuccessAlert] = useState(false);
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccessAlertVisible, setIsSuccessAlertVisible] = useState(false); // State for success alert
-  const navigate = useNavigate(); // Use navigate instead of history
+  const [isSuccessAlertVisible, setIsSuccessAlertVisible] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -18,13 +30,13 @@ const Login = () => {
       setSuccessAlert(true);
       setTimeout(() => {
         setSuccessAlert(false);
-      }, 5000); // Hide alert after 5 seconds
+      }, 5000);
     }
   }, []);
 
   const handleSignIn = async (event) => {
     event.preventDefault();
-    const email = event.target.email.value.trim();  // Changed to email
+    const email = event.target.email.value.trim();
     const password = event.target.password.value.trim();
 
     setEmailError('');
@@ -45,28 +57,66 @@ const Login = () => {
     if (isValid) {
       setIsSubmitting(true);
       try {
-        // Firebase authentication logic for email and password
+        await setPersistence(auth, browserSessionPersistence);
+
         await signInWithEmailAndPassword(auth, email, password);
         setIsSubmitting(false);
-        // Show success alert after successful login
+
         setIsSuccessAlertVisible(true);
-        // Wait for alert to disappear before navigating
+
         setTimeout(() => {
-          setIsSuccessAlertVisible(false);  // Hide the alert
-          navigate('/'); // Navigate to the home page or dashboard after alert is hidden
-        }, 3000); // Set the same timeout as the alert duration
+          setIsSuccessAlertVisible(false);
+          navigate('/');
+        }, 3000);
       } catch (error) {
         setIsSubmitting(false);
-        // Handle error
         setEmailError('Invalid email or password');
         setPasswordError('');
       }
     }
   };
 
+  const handleGoogleSignIn = async () => {
+  setIsSubmitting(true);
+  const provider = new GoogleAuthProvider();
+  try {
+    await setPersistence(auth, browserSessionPersistence);
+
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+
+    // Cek apakah user sudah ada di Firestore
+    const userRef = doc(db, 'users', user.uid);
+    const userSnap = await getDoc(userRef);
+
+    if (!userSnap.exists()) {
+      // Jika belum ada, simpan data user baru
+      const userData = {
+        uid: user.uid,
+        email: user.email,
+        username: user.displayName || 'No Name',
+        photoURL: user.photoURL || null,
+        createdAt: serverTimestamp(),
+      };
+      await setDoc(userRef, userData);
+    }
+
+    setIsSubmitting(false);
+    setIsSuccessAlertVisible(true);
+
+    setTimeout(() => {
+      setIsSuccessAlertVisible(false);
+      navigate('/');
+    }, 3000);
+  } catch (error) {
+    setIsSubmitting(false);
+    setEmailError('Failed to login with Google');
+  }
+};
+
+
   return (
     <div className="login-body">
-      {/* Render the Success Alert after login */}
       {isSuccessAlertVisible && (
         <Alert
           title="Success"
@@ -77,7 +127,6 @@ const Login = () => {
         />
       )}
 
-      {/* Render the Success Alert for registration */}
       {successAlert && (
         <div className="success-alert">
           Registration successful! Please sign in to start.
@@ -86,7 +135,6 @@ const Login = () => {
 
       <div className="login-container">
         <div className="content-wrapper">
-          {/* Left Section (Image) */}
           <div 
             className="image-section" 
             style={{
@@ -102,7 +150,7 @@ const Login = () => {
               backgroundPosition: 'center'
             }}
           >
-            <div className="overlay"></div> {/* Optional overlay to darken background */}
+            <div className="overlay"></div>
             <img src="/assets/BookNest.png" className="logo" alt="Logo" style={{ position: 'absolute', top: '10px', left: '10px', width: '150px' }} />
             <h2 className="fw-bold">Welcome Back!</h2>
             <p className="mt-2 text-center">Sign in and start your journey</p>
@@ -110,7 +158,6 @@ const Login = () => {
             <a className="login-signup-btn py-2 w-75" href="/regist">Sign Up</a>
           </div>
 
-          {/* Right Section (Form) */}
           <div className="form-section">
             <button type="button" className="btn-close" onClick={() => window.location.href = '/'}></button>
             <h2 className="text-center fw-bold mb-4 mt-1">Sign In</h2>
@@ -142,9 +189,14 @@ const Login = () => {
               <hr className="separator-line" />
             </div>
 
-            <button type="button" className="btn w-100 google-btn mt-3">
+            <button 
+              type="button" 
+              className="btn w-100 google-btn mt-3" 
+              onClick={handleGoogleSignIn}
+              disabled={isSubmitting}
+            >
               <img src="/assets/google-icon.png" alt="Google" className="google-icon" />
-              Login with Google
+              {isSubmitting ? 'Signing In...' : 'Login with Google'}
             </button>
           </div>
         </div>

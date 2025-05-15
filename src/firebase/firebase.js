@@ -1,5 +1,17 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword   } from "firebase/auth";
+
+// Firebase Authentication imports (auth, persistence, Google login)
+import { 
+  getAuth, 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword,
+  browserSessionPersistence,
+  GoogleAuthProvider,
+  signInWithPopup,
+  setPersistence,
+} from "firebase/auth";
+
+// Firestore imports
 import {
   getFirestore,
   doc,
@@ -10,7 +22,7 @@ import {
   query,
   where,
   addDoc,
-  serverTimestamp
+  serverTimestamp,
 } from "firebase/firestore";
 
 // Firebase configuration
@@ -28,5 +40,23 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Export fitur yang kamu pakai
-export { auth, signInWithEmailAndPassword, createUserWithEmailAndPassword  , db, doc, getDoc, setDoc, collection, getDocs, query, where, addDoc, serverTimestamp};
+// Export features you use
+export { 
+  auth, 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword,
+  browserSessionPersistence,
+  GoogleAuthProvider,
+  signInWithPopup,
+  setPersistence,
+  db, 
+  doc, 
+  getDoc, 
+  setDoc, 
+  collection, 
+  getDocs, 
+  query, 
+  where, 
+  addDoc, 
+  serverTimestamp 
+};
