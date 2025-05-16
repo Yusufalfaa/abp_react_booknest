@@ -1,0 +1,84 @@
+.mybooks-container {
+  max-width: 1200px;
+  margin: 15px auto;
+  padding: 0 24px;
+  font-family: 'Arial', sans-serif;
+}
+
+h1 {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.book-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.book-table thead th {
+  text-align: left;
+  border-bottom: 2px solid #ccc;
+  padding: 12px 10px;
+  font-weight: 600;
+}
+
+.book-table tbody td {
+  padding: 18px 10px;
+  border-bottom: 1px solid #eee;
+  vertical-align: middle;
+  text-align: left;
+}
+
+/* Atur lebar spesifik untuk tiap kolom agar sejajar */
+.book-table th:nth-child(1),
+.book-table td:nth-child(1) {
+  width: 200px; /* Cover */
+}
+
+.book-table th:nth-child(2),
+.book-table td:nth-child(2) {
+  width: 220px; /* Title */
+}
+
+.book-table th:nth-child(3),
+.book-table td:nth-child(3) {
+  width: 220px; /* Author */
+}
+
+.book-table th:nth-child(4),
+.book-table td:nth-child(4) {
+  width: 200px; /* Rating */
+}
+
+.book-table th:nth-child(5),
+.book-table td:nth-child(5) {
+  width: 200px; /* Read Status */
+}
+
+.book-cover {
+  width: 110px;
+  height: 150px;
+  background-color: #ccc;
+  color: #444;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+input[type="text"] {
+  width: 100%;
+  max-width: 300px;
+  padding: 10px;
+  /*border: 1px solid #cccccc;*/
+  border-radius: 4px;
+}
+
+input[type="text"]::placeholder {
+  color: #B7B4B2 !important;
+}
