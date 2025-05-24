@@ -9,6 +9,10 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   setPersistence,
+  updatePassword,
+  reauthenticateWithCredential, 
+  EmailAuthProvider, 
+  onAuthStateChanged
 } from "firebase/auth";
 
 // Firestore imports
@@ -17,6 +21,7 @@ import {
   doc,
   getDoc,
   setDoc,
+  updateDoc,
   collection,
   getDocs,
   query,
@@ -42,21 +47,26 @@ const db = getFirestore(app);
 
 // Export features you use
 export { 
-  auth, 
-  signInWithEmailAndPassword, 
+  auth,
+  signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   browserSessionPersistence,
   GoogleAuthProvider,
   signInWithPopup,
   setPersistence,
-  db, 
-  doc, 
-  getDoc, 
-  setDoc, 
-  collection, 
-  getDocs, 
-  query, 
-  where, 
-  addDoc, 
-  serverTimestamp 
+  updatePassword,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
+  onAuthStateChanged,
+  db,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  collection,
+  getDocs,
+  query,
+  where,
+  addDoc,
+  serverTimestamp,
 };
