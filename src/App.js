@@ -16,6 +16,7 @@ import Reply from './pages/reply/reply';
 import CreateForum from './pages/forum/createforum';
 import BookDetail from './pages/bookdetail/bookdetail';
 import Profile from './pages/profile/profile';
+import Genre from './pages/genre/genre';
 
 function App() {
   const location = useLocation();
@@ -43,6 +44,7 @@ function App() {
               <Route path="/discuss" element={<Reply />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/bookdetail/:id" element={<BookDetail />} />
+              <Route path="/genre/:genre" element={<Genre />} />
             </Routes>
           </div>
           <Footer />
