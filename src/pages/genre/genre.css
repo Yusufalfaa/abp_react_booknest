@@ -34,24 +34,27 @@
 /** 2. BASE STYLING
 --------------------------------------------------------------*/
 
+/* Fonts */
+:root {
+    --body-font           : "Nunito", sans-serif;
+    --heading-font        : "Nunito", sans-serif;
+}
+
+/* Global Styling for all buttons to maintain consistency */
 * {
     font-family: 'Nunito', sans-serif;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-}
-
-.genre-container {
-    padding: 2rem 1rem;
 }
 
 .genre-title {
-    font-size: 1.75rem;
-    font-weight: bold;
+    font-size: 2rem;
+    font-weight: 600; 
     color: var(--primary-color);
     text-align: center;
-    margin-bottom: 1.5rem;
-    text-transform: capitalize;
+    margin-bottom: 2rem;
+    text-transform: uppercase; 
+    letter-spacing: 0.09em; 
 }
 
 .loading-text,
@@ -68,9 +71,11 @@
 .grid-container {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
-    gap: 12px;
+    max-width: 1500px; 
+    margin: auto; 
     justify-items: center;
 }
+
 
 .book-card {
     display: flex;
