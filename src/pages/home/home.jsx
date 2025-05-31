@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 import './home.css';
 import { useEffect } from 'react';
+=======
+import "./home.css";
+import { useEffect } from "react";
+>>>>>>> 07bfb76098a95343fe59b5a4f4e2086c8c4da870
 
 const Home = () => {
   useEffect(() => {
