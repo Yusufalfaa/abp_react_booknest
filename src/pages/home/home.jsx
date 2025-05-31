@@ -1,5 +1,5 @@
-import './home.css'
-import { useEffect } from 'react';
+import "./home.css";
+import { useEffect } from "react";
 
 const Home = () => {
   useEffect(() => {
