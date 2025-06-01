@@ -173,7 +173,7 @@ const Home = () => {
                     onClick={() => handleToggleBook(book)}
                     disabled={!user}
                   >
-                    {isInList ? 'Remove from MyBook List' : 'Add to MyBook List'}
+                    {isInList ? 'Remove from List' : 'Add to List'}
                   </button>
                 </div>
               </div>
