@@ -22,11 +22,10 @@ const BookDetail = () => {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const bookData = { id: docSnap.id, ...docSnap.data() };
-          // Ensure isbn13 is set
-          bookData.isbn13 = bookData.isbn13 || docSnap.id;
+          bookData.isbn13 = bookData.isbn13 || id; // Ensure isbn13
           setBook(bookData);
         } else {
-          console.log("No such document!");
+          console.log("No such book document!");
           setError("Book not found.");
         }
       } catch (error) {
@@ -39,19 +38,21 @@ const BookDetail = () => {
       const user = auth.currentUser;
       if (user) {
         try {
-          const bookRef = doc(db, "users", user.uid, "books", id);
+          const bookRef = doc(db, "users", user.uid, "books", id); // Check by isbn13
           const bookSnap = await getDoc(bookRef);
           setIsBookInList(bookSnap.exists());
         } catch (err) {
-          console.error("Error checking book list:", err);
-          setError("Failed to load book list status.");
+          console.error("Error checking book in user collection:", err);
+          setError("Failed to check book status.");
         }
+      } else {
+        setIsBookInList(false); // Reset if no user
       }
     };
 
     fetchBookDetails();
     checkIfBookInList();
-  }, [id, auth]);
+  }, [id, auth.currentUser]); // Re-run when id or user changes
 
   const handleToggleBook = async () => {
     const user = auth.currentUser;
@@ -63,11 +64,13 @@ const BookDetail = () => {
 
     try {
       if (isBookInList) {
+        // Remove book using isbn13 as document ID
         await bookService.removeBook(user.uid, id);
         setIsBookInList(false);
         setError(null);
       } else {
-        if (!book.title) {
+        // Validate required fields
+        if (!book?.title) {
           setError("Book title is missing.");
           return;
         }
@@ -83,6 +86,7 @@ const BookDetail = () => {
           description: book.description || "",
         };
 
+        // Add book using isbn13 as document ID
         await bookService.addBook(user.uid, id, bookData);
         setIsBookInList(true);
         setError(null);
@@ -108,7 +112,10 @@ const BookDetail = () => {
         </h1>
         <div className="book-info">
           <img
-            src={book.thumbnail || "https://m.media-amazon.com/images/I/51DPUA--50L._SY445_SX342_.jpg"}
+            src={
+              book.thumbnail ||
+              "https://m.media-amazon.com/images/I/51DPUA--50L._SY445_SX342_.jpg"
+            }
             alt={book.title || "Book"}
             className="book-thumbnail"
           />
