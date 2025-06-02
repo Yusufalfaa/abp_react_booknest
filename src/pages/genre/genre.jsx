@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom'; 
-import { collection, getDocs } from 'firebase/firestore'; 
-import { db } from '../../firebase/firebase'; 
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../../firebase/firebase";
 import "./genre.css";
 
 const Genre = () => {

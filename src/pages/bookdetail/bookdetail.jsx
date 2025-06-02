@@ -8,7 +8,7 @@ import { getAuth } from "firebase/auth";
 import BookService from "../../firebase/bookService";
 
 const BookDetail = () => {
-  const { id } = useParams(); // This is isbn13 from AllBooks
+  const { id } = useParams(); // Ini adalah isbn13 dari AllBooks
   const [book, setBook] = useState(null);
   const [isBookInList, setIsBookInList] = useState(false);
   const [error, setError] = useState(null);
@@ -22,7 +22,7 @@ const BookDetail = () => {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const bookData = { id: docSnap.id, ...docSnap.data() };
-          // Ensure isbn13 is set
+          // Pastikan isbn13 sudah ada
           bookData.isbn13 = bookData.isbn13 || docSnap.id;
           setBook(bookData);
         } else {
@@ -42,6 +42,11 @@ const BookDetail = () => {
           const bookRef = doc(db, "users", user.uid, "books", id);
           const bookSnap = await getDoc(bookRef);
           setIsBookInList(bookSnap.exists());
+          // Simpan status ke localStorage agar tetap ada setelah refresh
+          localStorage.setItem(
+            `book-${id}`,
+            bookSnap.exists() ? "inList" : "notInList"
+          );
         } catch (err) {
           console.error("Error checking book list:", err);
           setError("Failed to load book list status.");
@@ -52,6 +57,15 @@ const BookDetail = () => {
     fetchBookDetails();
     checkIfBookInList();
   }, [id, auth]);
+
+  useEffect(() => {
+    const storedStatus = localStorage.getItem(`book-${id}`);
+    if (storedStatus === "inList") {
+      setIsBookInList(true);
+    } else if (storedStatus === "notInList") {
+      setIsBookInList(false);
+    }
+  }, [id]);
 
   const handleToggleBook = async () => {
     const user = auth.currentUser;
@@ -66,6 +80,9 @@ const BookDetail = () => {
         await bookService.removeBook(user.uid, id);
         setIsBookInList(false);
         setError(null);
+
+        // Update status di localStorage
+        localStorage.setItem(`book-${id}`, "notInList");
       } else {
         if (!book.title) {
           setError("Book title is missing.");
@@ -86,6 +103,9 @@ const BookDetail = () => {
         await bookService.addBook(user.uid, id, bookData);
         setIsBookInList(true);
         setError(null);
+
+        // Update status di localStorage
+        localStorage.setItem(`book-${id}`, "inList");
       }
     } catch (err) {
       console.error("Error modifying book list:", err);
@@ -108,16 +128,29 @@ const BookDetail = () => {
         </h1>
         <div className="book-info">
           <img
-            src={book.thumbnail || "https://m.media-amazon.com/images/I/51DPUA--50L._SY445_SX342_.jpg"}
+            src={
+              book.thumbnail ||
+              "https://m.media-amazon.com/images/I/51DPUA--50L._SY445_SX342_.jpg"
+            }
             alt={book.title || "Book"}
             className="book-thumbnail"
           />
           <div className="book-details">
-            <p><strong>Author:</strong> {book.authors || "Unknown"}</p>
-            <p><strong>Pages:</strong> {book.num_pages || "N/A"}</p>
-            <p><strong>Published Year:</strong> {book.published_year || "N/A"}</p>
-            <p><strong>Average Rating:</strong> {book.average_rating || "N/A"}</p>
-            <p><strong>Categories:</strong> {book.categories || "N/A"}</p>
+            <p>
+              <strong>Author:</strong> {book.authors || "Unknown"}
+            </p>
+            <p>
+              <strong>Pages:</strong> {book.num_pages || "N/A"}
+            </p>
+            <p>
+              <strong>Published Year:</strong> {book.published_year || "N/A"}
+            </p>
+            <p>
+              <strong>Average Rating:</strong> {book.average_rating || "N/A"}
+            </p>
+            <p>
+              <strong>Categories:</strong> {book.categories || "N/A"}
+            </p>
           </div>
         </div>
 
@@ -133,7 +166,9 @@ const BookDetail = () => {
         </div>
 
         <div className="book-description mt-4">
-          <h3><strong>Description</strong></h3>
+          <h3>
+            <strong>Description</strong>
+          </h3>
           <p>{book.description || "No description available."}</p>
         </div>
       </div>
