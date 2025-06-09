@@ -4,7 +4,6 @@ import { db } from '../../firebase/firebase';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { auth } from '../../firebase/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-
 import { Alert } from '../../components/Alerts/alert.jsx';
 
 import './forum.css';
@@ -28,34 +27,61 @@ function Forum() {
   const navigate = useNavigate();
   const [showAlert, setShowAlert] = useState(false);
 
-  // Fetch forums when the page loads or when the sort parameter changes
   // Inside your Forum component
-  useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, 'forums'), async (querySnapshot) => {
-      let data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-      // Fetch the replies count for each forum
-      for (let forum of data) {
-        const repliesSnapshot = await getDocs(collection(db, 'forums', forum.id, 'replies'));
-        forum.replies = repliesSnapshot.size; // Set the number of replies based on subcollection size
-      }
 
-      // Sorting logic
-      if (sort === 'popular') {
-        data.sort((a, b) => (b.replies || 0) - (a.replies || 0));
+useEffect(() => {
+  let unsubscribe;
+
+  async function fetchForumsAndUsers() {
+    // Fetch semua users dulu (sekali)
+    const usersSnapshot = await getDocs(collection(db, "users"));
+    const users = {};
+    usersSnapshot.forEach(doc => {
+      users[doc.id] = doc.data(); // simpan user data by id
+    });
+
+    // Pasang listener realtime untuk forums
+    unsubscribe = onSnapshot(collection(db, "forums"), async (querySnapshot) => {
+      const forumsData = await Promise.all(querySnapshot.docs.map(async (doc) => {
+        const forum = { id: doc.id, ...doc.data() };
+
+        // ambil jumlah replies
+        const repliesSnapshot = await getDocs(collection(db, "forums", forum.id, "replies"));
+        forum.replies = repliesSnapshot.size;
+
+        // Ambil avatar user dari users object (hasil fetch di atas)
+        const user = users[forum.userId];
+        forum.avatar = user?.avatar || "/assets/25.png";
+        forum.username = user?.username || "Unknown User";
+
+        return forum;
+      }));
+
+      // Sorting sesuai kebutuhan
+      if (sort === "popular") {
+        forumsData.sort((a, b) => (b.replies || 0) - (a.replies || 0));
       } else {
-        data.sort((a, b) => {
+        forumsData.sort((a, b) => {
           const dateA = a.date?.seconds || 0;
           const dateB = b.date?.seconds || 0;
           return dateB - dateA;
         });
       }
 
-      setForums(data); // Update state with the new data
+      setForums(forumsData);
     });
+  }
 
-    return () => unsubscribe(); // Cleanup the listener when the component unmounts
-  }, [sort]); // Add other dependencies if necessary
+  fetchForumsAndUsers();
+
+  return () => {
+    if (unsubscribe) unsubscribe();
+  };
+}, [sort]);
+
+
+
 
   // Detect if the user is logged in
   useEffect(() => {
@@ -173,7 +199,7 @@ function Forum() {
                 <div className="d-flex align-items-center mb-3">
                   <div className="avatar-reply me-3">
                     <img
-                      src="/assets/avt.jpg"
+                      src={forum.avatar}
                       alt="Avatar"
                       className="rounded-circle"
                     />
