@@ -217,20 +217,6 @@ const Profile = () => {
     }
   }
 
-  const handleCancelEdit = () => {
-    // Reset temporary values to current values
-    setTempUsername(username)
-    setTempEmail(email)
-    setTempMobileNumber(mobileNumber)
-    setTempGender(gender)
-
-    // Reset all editing states
-    setIsEditingUsername(false)
-    setIsEditingEmail(false)
-    setIsEditingMobile(false)
-    setIsEditingGender(false)
-  }
-
   const handleSavePassword = async () => {
     if (newPassword !== confirmPassword) {
       setSaveMessage("New passwords don't match!")
