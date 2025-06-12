@@ -5,6 +5,9 @@ import { collection, query, where, getDocs, limit } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import BookService from '../../firebase/bookService';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar as solidStar, faStarHalfAlt  } from "@fortawesome/free-solid-svg-icons";
+import { faStar as regularStar } from "@fortawesome/free-regular-svg-icons";
 
 const Home = () => {
   const [randomBooks, setRandomBooks] = useState([]);
@@ -98,6 +101,35 @@ const Home = () => {
     fetchUserBooks();
   }, [user]);
 
+  const renderStars = (rating) => {
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(<FontAwesomeIcon key={i} icon={solidStar} color="#ffd700" />);
+    }
+
+    if (hasHalfStar && fullStars < 5) {
+      stars.push(
+        <FontAwesomeIcon key="half" icon={faStarHalfAlt} color="#ffd700" />
+      );
+    }
+
+    const remaining = 5 - stars.length;
+    for (let i = 0; i < remaining; i++) {
+      stars.push(
+        <FontAwesomeIcon
+          key={`empty-${i}`}
+          icon={regularStar}
+          color="#ffd700"
+        />
+      );
+    }
+
+    return stars;
+  };
+
   const handleToggleBook = async (book) => {
     if (!user) {
       setError('You must be logged in to manage your list.');
@@ -168,6 +200,13 @@ const Home = () => {
                 </div>
                 <div className="random-book-desc">
                   <p><strong>{book.title || 'Untitled'}</strong></p>
+                  <div className="book-ratingg">
+                    {renderStars(book.average_rating || 0)}
+                    <span className="rating-number">
+                      {(book.average_rating || 0).toFixed(1)}
+                    </span>
+                  </div>
+
                   <p>{book.description?.substring(0, 100) || 'No description available.'}...</p>
                   <button
                     className="add-btn"
@@ -207,6 +246,12 @@ const Home = () => {
                       className="book-imageg"
                       onClick={() => book.isbn13 && handleBookClick(book.isbn13 || book.id)}
                     />
+                  </div>
+                  <div className="book-ratingg">
+                    {renderStars(book.average_rating || 0)}
+                    <span className="rating-number">
+                      {(book.average_rating || 0).toFixed(1)}
+                    </span>
                   </div>
                   <a href={`/bookdetail/${book.isbn13}`} className="book-titleg" title={book.title}>
                     {book.title || 'Untitled'}

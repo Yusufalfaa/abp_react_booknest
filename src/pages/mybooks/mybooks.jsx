@@ -4,6 +4,9 @@ import "./mybooks.css";
 import { auth, db, collection, getDocs } from "../../firebase/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import BookService from "../../firebase/bookService";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar as solidStar, faStarHalfAlt  } from "@fortawesome/free-solid-svg-icons";
+import { faStar as regularStar } from "@fortawesome/free-regular-svg-icons";
 
 const MyBooks = () => {
   const [books, setBooks] = useState([]);
@@ -64,6 +67,36 @@ const MyBooks = () => {
     navigate(`/bookdetail/${isbn13}`);
   };
 
+  const renderStars = (rating) => {
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(<FontAwesomeIcon key={i} icon={solidStar} color="#ffd700" />);
+    }
+
+    if (hasHalfStar && fullStars < 5) {
+      stars.push(
+        <FontAwesomeIcon key="half" icon={faStarHalfAlt} color="#ffd700" />
+      );
+    }
+
+    const remaining = 5 - stars.length;
+    for (let i = 0; i < remaining; i++) {
+      stars.push(
+        <FontAwesomeIcon
+          key={`empty-${i}`}
+          icon={regularStar}
+          color="#ffd700"
+        />
+      );
+    }
+
+    return stars;
+  };
+
+
   return (
     <div className="mybooks-container">
       <h1>MyBooks</h1>
@@ -100,7 +133,12 @@ const MyBooks = () => {
                 <td>{book.title || "Untitled"}</td>
                 <td>{book.authors || "Unknown Author"}</td>
                 <td>
-                  <strong>{book.average_rating || "-"}</strong>
+                  <div className="book-ratingg">
+                    {renderStars(book.average_rating || 0)}
+                    <span className="rating-number">
+                      {(book.average_rating || 0).toFixed(1)}
+                    </span>
+                  </div>
                 </td>
                 <td>
                   <button

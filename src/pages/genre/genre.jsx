@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
-import './genre.css'; // Tetap gunakan CSS yang sama dengan AllBooks
+import './genre.css';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar as solidStar, faStarHalfAlt  } from "@fortawesome/free-solid-svg-icons";
+import { faStar as regularStar } from "@fortawesome/free-regular-svg-icons";
+
 
 const Genre = () => {
   const { genre } = useParams();
@@ -55,6 +59,36 @@ const Genre = () => {
     return pages;
   };
 
+  const renderStars = (rating) => {
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(<FontAwesomeIcon key={i} icon={solidStar} color="#ffd700" />);
+    }
+
+    if (hasHalfStar && fullStars < 5) {
+      stars.push(
+        <FontAwesomeIcon key="half" icon={faStarHalfAlt} color="#ffd700" />
+      );
+    }
+
+    const remaining = 5 - stars.length;
+    for (let i = 0; i < remaining; i++) {
+      stars.push(
+        <FontAwesomeIcon
+          key={`empty-${i}`}
+          icon={regularStar}
+          color="#ffd700"
+        />
+      );
+    }
+
+    return stars;
+  };
+
+
   return (
     <div className="container">
       <h1 className="text-center" style={{ marginTop: '32px', fontWeight: 700 }}>{genre} Books</h1>
@@ -82,6 +116,12 @@ const Genre = () => {
                     e.target.src = 'https://via.placeholder.com/150';
                   }}
                 />
+                <div className="book-ratingg">
+                    {renderStars(book.average_rating || 0)}
+                    <span className="rating-number">
+                      {(book.average_rating || 0).toFixed(1)}
+                    </span>
+                </div>
                 <p className="book-title">{book.title}</p>
               </div>
             ))}

@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar as solidStar, faStarHalfAlt  } from "@fortawesome/free-solid-svg-icons";
+import { faStar as regularStar } from "@fortawesome/free-regular-svg-icons";
 
 import './allbooks.css';
 
@@ -42,6 +45,35 @@ const AllBooks = ({ selectedGenre }) => {
   return pages;
 };
 
+  const renderStars = (rating) => {
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(<FontAwesomeIcon key={i} icon={solidStar} color="#ffd700" />);
+    }
+
+    if (hasHalfStar && fullStars < 5) {
+      stars.push(
+        <FontAwesomeIcon key="half" icon={faStarHalfAlt} color="#ffd700" />
+      );
+    }
+
+    const remaining = 5 - stars.length;
+    for (let i = 0; i < remaining; i++) {
+      stars.push(
+        <FontAwesomeIcon
+          key={`empty-${i}`}
+          icon={regularStar}
+          color="#ffd700"
+        />
+      );
+    }
+
+    return stars;
+  };
+
 
   return (
     <section id="latest-posts" className="padding-large">
@@ -64,6 +96,12 @@ const AllBooks = ({ selectedGenre }) => {
                   className="book-cover"
                 />
               </a>
+              <div className="book-ratingg">
+                    {renderStars(book.average_rating || 0)}
+                    <span className="rating-number">
+                      {(book.average_rating || 0).toFixed(1)}
+                    </span>
+              </div>
               <a  href={`/bookdetail/${book.isbn13}`} className="book-title" title={book.title}>
                 {book.title}
               </a>
@@ -72,61 +110,61 @@ const AllBooks = ({ selectedGenre }) => {
         </div>
 
         {/* Pagination */}
-{/* Pagination */}
-<nav aria-label="Page navigation example" style={{ marginTop: '32px' }}>
-  <div className="pagination-wrapper">
-    <ul className="pagination justify-content-center">
-      {/* Previous Button */}
-      <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-        <button className="page-link" onClick={() => handlePageChange(currentPage - 1)}>
-          Prev
-        </button>
-      </li>
 
-      {/* Page 1 */}
-      <li className={`page-item ${currentPage === 1 ? 'active' : ''}`}>
-        <button className="page-link" onClick={() => handlePageChange(1)}>1</button>
-      </li>
+        <nav aria-label="Page navigation example" style={{ marginTop: '32px' }}>
+          <div className="pagination-wrapper">
+            <ul className="pagination justify-content-center">
+              {/* Previous Button */}
+              <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                <button className="page-link" onClick={() => handlePageChange(currentPage - 1)}>
+                  Prev
+                </button>
+              </li>
 
-      {/* ... after 1 */}
-      {currentPage > 4 && (
-        <li className="page-item disabled">
-          <span className="page-link">...</span>
-        </li>
-      )}
+              {/* Page 1 */}
+              <li className={`page-item ${currentPage === 1 ? 'active' : ''}`}>
+                <button className="page-link" onClick={() => handlePageChange(1)}>1</button>
+              </li>
 
-      {/* Middle Pages */}
-      {generatePageNumbers().map((page) => (
-        <li key={page} className={`page-item ${currentPage === page ? 'active' : ''}`}>
-          <button className="page-link" onClick={() => handlePageChange(page)}>{page}</button>
-        </li>
-      ))}
+              {/* ... after 1 */}
+              {currentPage > 4 && (
+                <li className="page-item disabled">
+                  <span className="page-link">...</span>
+                </li>
+              )}
 
-      {/* ... before last page */}
-      {currentPage < totalPages - 3 && (
-        <li className="page-item disabled">
-          <span className="page-link">...</span>
-        </li>
-      )}
+              {/* Middle Pages */}
+              {generatePageNumbers().map((page) => (
+                <li key={page} className={`page-item ${currentPage === page ? 'active' : ''}`}>
+                  <button className="page-link" onClick={() => handlePageChange(page)}>{page}</button>
+                </li>
+              ))}
 
-      {/* Last Page */}
-      {totalPages > 1 && (
-        <li className={`page-item ${currentPage === totalPages ? 'active' : ''}`}>
-          <button className="page-link" onClick={() => handlePageChange(totalPages)}>
-            {totalPages}
-          </button>
-        </li>
-      )}
+              {/* ... before last page */}
+              {currentPage < totalPages - 3 && (
+                <li className="page-item disabled">
+                  <span className="page-link">...</span>
+                </li>
+              )}
 
-      {/* Next Button */}
-      <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-        <button className="page-link" onClick={() => handlePageChange(currentPage + 1)}>
-          Next
-        </button>
-      </li>
-    </ul>
-  </div>
-</nav>
+              {/* Last Page */}
+              {totalPages > 1 && (
+                <li className={`page-item ${currentPage === totalPages ? 'active' : ''}`}>
+                  <button className="page-link" onClick={() => handlePageChange(totalPages)}>
+                    {totalPages}
+                  </button>
+                </li>
+              )}
+
+              {/* Next Button */}
+              <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                <button className="page-link" onClick={() => handlePageChange(currentPage + 1)}>
+                  Next
+                </button>
+              </li>
+            </ul>
+          </div>
+        </nav>
 
       </div>
     </section>
