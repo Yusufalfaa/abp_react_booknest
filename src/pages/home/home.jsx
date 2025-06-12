@@ -1,5 +1,5 @@
 import './home.css';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { collection, query, where, getDocs, limit } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
@@ -17,14 +17,16 @@ const Home = () => {
   const navigate = useNavigate();
   const bookService = new BookService();
 
-  const genres = [
+
+
+  const genres = useMemo(() => [
     'Fiction',
     'Biography & Autobiography',
     'Religion',
     'Philosophy',
     'Juvenile Fiction',
     'Social Science',
-  ];
+  ], []);
 
   useEffect(() => {
     document.title = 'Home - BookNest';
@@ -77,7 +79,7 @@ const Home = () => {
     fetchGenreBooks();
 
     return () => unsubscribe();
-  }, []);
+  }, [genres]);
 
   useEffect(() => {
     const fetchUserBooks = async () => {
