@@ -141,8 +141,8 @@ button,
 --------------------------------------------------------------*/
 .book-grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr); /* 6 kolom */
-  gap: 12px; /* lebih rapat */
+  grid-template-columns: repeat(6, 1fr); 
+  gap: 12px; 
   justify-items: center;
   margin-top: 32px;
 }
@@ -151,12 +151,12 @@ button,
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 150px;
+  width: 180px;
 }
 
 .book-cover {
-  width: 150px;
-  height: 200px;
+  width: 180px;
+  height: 240px;
   object-fit: cover;
   border-radius: 4px;
   box-shadow: var(--bs-box-shadow);
@@ -205,11 +205,11 @@ button,
 
 /* Enable wrapping of pagination items */
 .pagination {
-  flex-wrap: wrap; /* 👈 INI KUNCI AGAR BISA MULTI BARIS */
+  flex-wrap: wrap;
   max-width: 100%;
   justify-content: center;
   gap: 4px;
-  row-gap: 8px; /* Jarak antar baris */
+  row-gap: 8px; 
 }
 
 /* Responsive tweaks for smaller screens */

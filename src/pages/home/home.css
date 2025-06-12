@@ -15,152 +15,24 @@
   margin-left: 10%;
 }
 
-.book-section {
-  padding: 40px;
+.book-sectiong {
+  padding: 20px 80px;
 }
 
-.book-section h2 {
-  font-size: 1.5rem;
-  margin: -20px 80px 35px;
-  font-weight: 600;
-  text-align: left;
-}
-
-.book-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  column-gap: 12px;
-  row-gap: 40px;
-  justify-content: start;
-  padding-left: 30px;
-}
-
-.book-gridg {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  column-gap: 58px;
-  justify-content: start;
-  padding-left: 80px;
-  padding-right: 80px;
-}
-
-.book-grid.horizontal-scroll {
-  display: flex;
-  overflow-x: auto;
-  gap: 20px;
-  padding-bottom: 10px;
-  justify-content: flex-start;
-  padding-left: 80px;
-}
-
-.book-card {
-  background-color: white;
-  padding: 12px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  transition: transform 0.2s ease;
-}
-
-.book-cardg {
-  background-color: rgb(255, 255, 255);
-  width: 165px;
-  padding-left: 15px;
-  padding-right: 15px;
-  padding-top: 10px;
-  padding-bottom: 15px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  transition: transform 0.2s ease;
-}
-
-.book-card.featured {
-  flex: 0 0 auto;
-  display: flex;
-  flex-direction: row;
-  gap: 15px;
-  width: 600px;
-  max-width: 100%;
-  align-items: flex-start;
-}
-
-.book-card.featured .book-cover {
-  flex: 0 0 130px;
-  height: 180px;
-  margin: 2% 2%;
-}
-
-.book-cardg .book-cover {
-  flex: 0 0 130px;
-  width: 130px;
-  height: 180px;
-  margin-top: 12px;
-  margin-bottom: 25px;
-}
-
-.book-card.featured .book-desc {
-  flex: 1;
-  text-align: left;
-  margin-top: 2%;
-  margin-right: 2%;
-}
-
-.book-card:hover {
-  transform: translateY(-4px);
-}
-
-.book-cardg:hover {
-  transform: translateY(-4px);
-}
-
-.book-cover {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 500;
-  margin-top: 8px;
-  margin-bottom: 8px;
-  border-radius: 10px;
-}
-
-.book-desc {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-  text-align: left;
-}
-
-.add-btn {
-  align-self: flex-end;
-  margin: 4% 0%;
-  background-color: #d76969;
-  color: white;
-  padding: 8px 12px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.add-btn:hover {
-  background-color: #c25757;
-}
-
-.section-header {
+.section-headerg {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin: -20px 80px 35px;
 }
 
-.section-header h2 {
+.section-headerg h2 {
   font-size: 1.5rem;
   font-weight: 600;
   margin: 0;
 }
 
-.see-more-btn {
+.see-more-btng {
   background-color: #d76969;
   color: white;
   border: none;
@@ -171,18 +43,188 @@
   transition: background-color 0.2s ease;
 }
 
-.see-more-btn:hover {
+.see-more-btng:hover {
   background-color: #c25757;
 }
 
-.book-title {
-  font-size: 0.85rem;
+/* ==== Horizontal scroll container ==== */
+.book-gridg {
+  display: flex;
+  overflow-x: auto;
+  gap: 40px;
+  padding: 0 40px 10px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ==== Book card style ==== */
+.book-cardg {
+  flex: 0 0 auto;
+  width: 180px;
+  scroll-snap-align: start;
+  background-color: transparent;
+  padding: 0;
   text-align: center;
-  height: 24px;
+  transition: transform 0.2s ease;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.book-cardg:hover {
+  transform: translateY(-4px);
+}
+
+/* ==== Book cover ==== */
+.book-cardg .book-coverg {
+  width: 180px;
+  height: 240px;
+  border-radius: 4px;
+  box-shadow: var(--bs-box-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 8px 0 12px;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  color: var(--black-color);
-  font-weight: 600;
+}
+
+/* ==== Image inside cover (replaces inline style) ==== */
+.book-imageg {
   width: 100%;
+  height: 100%;
+  object-fit: cover;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+/* ==== Book title ==== */
+  .book-titleg {
+    display: block;  
+    font-size: 0.85rem;
+    text-align: center;
+    height: 24px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--black-color);
+    font-weight: 600;
+    width: 100%;
+  }
+
+/* RANDOM BOOK - IDENTIK DENGAN NON-RANDOM, HANYA PENAMAAN YANG BERBEDA */
+
+/* Section */
+.random-book-section {
+  padding: 40px;
+}
+
+.random-book-section h2 {
+  font-size: 1.5rem;
+  margin: -20px 80px 35px;
+  font-weight: 600;
+  text-align: left;
+}
+
+/* Scroll Container */
+.random-book-scroll {
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  padding: 10px 80px; /* disesuaikan agar sama dengan book-grid.horizontal-scroll */
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: 80px;
+  justify-content: flex-start;
+}
+
+/* Card Style */
+.random-book-card {
+  width: 500px;
+  height: 220px;
+  padding: 12px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+  flex: 0 0 auto;
+  transition: transform 0.2s ease;
+}
+
+
+.random-book-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Cover */
+.random-book-cover {
+  flex: 0 0 150px;
+  width: 150px;
+  height: 200px;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.random-book-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+/* Desc */
+.random-book-desc {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  text-align: left;
+}
+
+.random-book-desc p {
+  margin: 0 0 8px 0;
+}
+
+.random-book-desc strong {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.random-book-desc .add-btn {
+  align-self: flex-end;
+  margin-top: auto;
+  background-color: #d76969;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: auto;
+}
+
+.random-book-desc .add-btn:hover {
+  background-color: #c25757;
+}
+
+.random-book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  column-gap: 12px;
+  row-gap: 40px;
+  justify-content: start;
+  padding-left: 30px;
+}
+
+.random-book-grid.horizontal-scroll {
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  padding-bottom: 10px;
+  justify-content: flex-start;
+  padding-left: 80px;
 }

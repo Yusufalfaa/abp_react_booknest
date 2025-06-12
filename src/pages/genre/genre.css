@@ -25,14 +25,10 @@
     --swiper-theme-color:       #4A4A4A;
     --swiper-pagination-color:  #4A4A4A;
     --bs-box-shadow: 0 0.2rem 0.6rem rgba(0, 0, 0, 0.08);
-
+    
     --bs-btn-font-size: 1rem;
     --star-color: #FF9933;
 }
-
-/*--------------------------------------------------------------
-/** 2. BASE STYLING
---------------------------------------------------------------*/
 
 /* Fonts */
 :root {
@@ -47,84 +43,184 @@
     padding: 0;
 }
 
-.genre-title {
-    font-size: 2rem;
-    font-weight: 600; 
-    color: var(--primary-color);
-    text-align: center;
-    margin-bottom: 2rem;
-    text-transform: uppercase; 
-    letter-spacing: 0.09em; 
-}
-
-.loading-text,
-.no-books {
-    text-align: center;
-    font-size: 1rem;
-    color: var(--gray-color-800);
+button,
+.nav-link {
+    font-family: 'Nunito', sans-serif;  /* Apply font to buttons and nav links */
+    font-size: 1rem;                    /* Uniform font size */
+    font-weight: 600;                   /* Consistent font weight */
+    text-transform: uppercase;          /* Text in uppercase for buttons */
+    letter-spacing: 0.09em;             /* Spacing between letters */
 }
 
 /*--------------------------------------------------------------
-/** 3. BOOK GRID
+/** 7. PAGINATION STRUCTURE
 --------------------------------------------------------------*/
 
-.grid-container {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    max-width: 1500px; 
-    gap: 20px;
-    margin: auto; 
-    justify-items: center;
+/* General Pagination Layout */
+.pagination {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  justify-content: center;
+  gap: 4px;
 }
 
+/* Previous Button (Disabled) */
+.page-item.disabled.previous .page-link {
+  background-color: var(--gray-color-500);
+  color: var(--gray-color-800);
+  pointer-events: none;
+  border: 1px solid var(--gray-color-500);
+  padding: 6px 8px;
+  border-radius: 4px;
+  transition: none;
+}
+
+/* Active Page Button */
+.page-item.active .page-link {
+  background-color: var(--primary-color) !important;
+  color: var(--white-color) !important;
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+  padding: 6px 8px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Clickable Normal Page Buttons */
+.page-item:not(.disabled) .page-link {
+  color: var(--primary-color);
+  background-color: var(--white-color);
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+  padding: 6px 8px;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Hover Effect for Clickable Page Buttons */
+.page-item:not(.disabled) .page-link:hover {
+  background-color: var(--primary-color);
+  color: var(--white-color);
+}
+
+/* Other Disabled Buttons */
+.page-item.disabled .page-link,
+.page-item.disabled span {
+  background-color: var(--gray-color-500);
+  color: var(--gray-color-800);
+  pointer-events: none;
+  border: 1px solid var(--gray-color-500);
+  padding: 6px 8px;
+  border-radius: 4px;
+  transition: none;
+}
+
+/* Page Link Styling */
+.page-link {
+  text-decoration: none;
+  cursor: pointer;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: var(--body-font);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .page-link {
+    padding: 4px 6px;
+  }
+  .pagination {
+    gap: 2px;
+  }
+}
+
+
+/*--------------------------------------------------------------
+/** 8. BOOK CARD GRID & STYLING
+--------------------------------------------------------------*/
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr); 
+  gap: 12px; 
+  justify-items: center;
+  margin-top: 32px;
+}
 
 .book-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 180px;
-    cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 180px;
 }
 
-.book-image {
-    width: 150px;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 4px;
-    box-shadow: var(--bs-box-shadow);
+.book-cover {
+  width: 180px;
+  height: 240px;
+  object-fit: cover;
+  border-radius: 4px;
+  box-shadow: var(--bs-box-shadow);
 }
 
 .book-title {
-    margin-top: 6px;
-    font-size: 0.85rem;
-    text-align: center;
-    height: 24px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    color: var(--black-color);
-    font-weight: 600;
-    width: 100%;
+  margin-top: 6px;
+  font-size: 0.85rem;
+  text-align: center;
+  height: 24px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--black-color);
+  font-weight: 600;
+  width: 100%;
 }
 
-/*--------------------------------------------------------------
-/** 4. RESPONSIVE DESIGN
---------------------------------------------------------------*/
-
+/* Responsive Grid */
 @media (max-width: 1024px) {
-    .grid-container {
-        grid-template-columns: repeat(4, 1fr);
-    }
+  .book-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
 @media (max-width: 768px) {
-    .grid-container {
-        grid-template-columns: repeat(3, 1fr);
-    }
+  .book-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 @media (max-width: 480px) {
-    .grid-container {
-        grid-template-columns: repeat(2, 1fr);
-    }
+  .book-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Responsive Pagination Container */
+.pagination-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 0 16px;
+  overflow-x: hidden;
+}
+
+/* Enable wrapping of pagination items */
+.pagination {
+  flex-wrap: wrap;
+  max-width: 100%;
+  justify-content: center;
+  gap: 4px;
+  row-gap: 8px; 
+}
+
+/* Responsive tweaks for smaller screens */
+@media (max-width: 576px) {
+  .page-link {
+    padding: 4px 6px;
+    font-size: 0.8rem;
+  }
+
+  .pagination {
+    gap: 3px;
+    row-gap: 6px;
+  }
 }

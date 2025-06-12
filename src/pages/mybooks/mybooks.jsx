@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Import for navigation
+import { useNavigate } from "react-router-dom";
 import "./mybooks.css";
 import { auth, db, collection, getDocs } from "../../firebase/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import BookService from "../../firebase/bookService"; // Import BookService
+import BookService from "../../firebase/bookService";
 
 const MyBooks = () => {
   const [books, setBooks] = useState([]);
@@ -11,7 +11,7 @@ const MyBooks = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const bookService = new BookService();
-  const navigate = useNavigate(); // For redirecting to book details
+  const navigate = useNavigate();
 
   useEffect(() => {
     document.title = "My Favorite Books - BookNest";
@@ -90,11 +90,9 @@ const MyBooks = () => {
               <tr key={book.id}>
                 <td>
                   <img
-                    src={
-                      book.thumbnail || "https://via.placeholder.com/80x120"
-                    }
+                    src={book.thumbnail || "https://via.placeholder.com/80x120"}
                     alt={book.title || "Book cover"}
-                    className="book-cover"
+                    className="book-cover-mb"
                     style={{ cursor: "pointer" }}
                     onClick={() => handleBookClick(book.isbn13 || book.id)}
                   />

@@ -25,7 +25,7 @@ const Home = () => {
     'Religion',
     'Philosophy',
     'Juvenile Fiction',
-    'Social Science',
+    'History',
   ], []);
 
   useEffect(() => {
@@ -58,7 +58,7 @@ const Home = () => {
           const q = query(
             collection(db, 'books'),
             where('categories', '==', genre),
-            limit(8)
+            limit(10)
           );
           const querySnapshot = await getDocs(q);
           const books = querySnapshot.docs.map((doc) => ({
@@ -149,25 +149,24 @@ const Home = () => {
         <h1>Find and rate your best book</h1>
       </div>
 
-      <section className="book-section">
+      <section className="random-book-section">
         <h2>Explore Random Books</h2>
         {error && <div className="text-danger mb-3">{error}</div>}
-        <div className="book-grid horizontal-scroll">
+        <div className="random-book-scroll">
           {randomBooks.map((book) => {
             const bookId = (book.isbn13 || book.id).toString();
             const isInList = userBooksSet.has(bookId);
 
             return (
-              <div className="book-card featured" key={bookId}>
-                <div className="book-cover">
+              <div className="random-book-card" key={bookId}>
+                <div className="random-book-cover">
                   <img
-                    src={book.thumbnail || 'https://via.placeholder.com/80x120'}
+                    src={book.thumbnail || 'https://via.placeholder.com/150x200'}
                     alt={book.title || 'Book Cover'}
-                    style={{ cursor: 'pointer' }}
                     onClick={() => handleBookClick(bookId)}
                   />
                 </div>
-                <div className="book-desc">
+                <div className="random-book-desc">
                   <p><strong>{book.title || 'Untitled'}</strong></p>
                   <p>{book.description?.substring(0, 100) || 'No description available.'}...</p>
                   <button
@@ -184,36 +183,40 @@ const Home = () => {
         </div>
       </section>
 
+
       {genres.map((genre) => (
-        <section className="book-section" key={genre}>
-          <div className="section-header">
+        <section className="book-sectiong" key={genre}>
+          <div className="section-headerg">
             <h2>{genre}</h2>
             <button
-              className="see-more-btn"
+              className="see-more-btng"
               onClick={() => navigate(`/genre/${encodeURIComponent(genre)}`)}
             >
               See More
             </button>
           </div>
           <div className="book-gridg">
-            {(genreBooks[genre] || Array.from({ length: 8 }).map((_, idx) => ({ id: `placeholder-${idx}` }))).slice(0, 8).map((book) => (
-            <div className="book-cardg" key={book.isbn13 || book.id}>
-              <div className="book-cover">
-                <img
-                  src={book.thumbnail || '/assets/placeholder.png'}
-                  alt={book.title || 'Book Cover'}
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => book.isbn13 && handleBookClick(book.isbn13 || book.id)}
-                />
-              </div>
-              <div className="book-title" title={book.title}>
-                {book.title || 'Untitled'}
-              </div>
-            </div>
+            {(genreBooks[genre] || Array.from({ length: 10 }).map((_, idx) => ({ id: `placeholder-${idx}` })))
+              .slice(0, 10)
+              .map((book) => (
+                <div className="book-cardg" key={book.isbn13 || book.id}>
+                  <div className="book-coverg">
+                    <img
+                      src={book.thumbnail || '/assets/placeholder.png'}
+                      alt={book.title || 'Book Cover'}
+                      className="book-imageg"
+                      onClick={() => book.isbn13 && handleBookClick(book.isbn13 || book.id)}
+                    />
+                  </div>
+                  <a href={`/bookdetail/${book.isbn13}`} className="book-titleg" title={book.title}>
+                    {book.title || 'Untitled'}
+                  </a>
+                </div>
             ))}
           </div>
         </section>
       ))}
+
     </div>
   );
 };
