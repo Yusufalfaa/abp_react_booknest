@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom';
 
 const FloatingFAQButton = () => {
   return (
-    <Link to="/faq" className="floating-button" aria-label="FAQ" />
+    <Link to="/faq" className="floating-button" aria-label="FAQ">
+    </Link>
   );
 };
 

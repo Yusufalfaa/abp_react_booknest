@@ -17,6 +17,7 @@ import CreateForum from './pages/forum/createforum';
 import BookDetail from './pages/bookdetail/bookdetail';
 import Profile from './pages/profile/profile';
 import Genre from './pages/genre/genre';
+import FAQ from './pages/faq/faq';
 
 function App() {
   const location = useLocation();
@@ -45,6 +46,7 @@ function App() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/bookdetail/:id" element={<BookDetail />} />
               <Route path="/genre/:genre" element={<Genre />} />
+              <Route path="/faq" element={<FAQ />} />
             </Routes>
           </div>
           <Footer />
