@@ -195,16 +195,19 @@ const Home = () => {
           </div>
           <div className="book-gridg">
             {(genreBooks[genre] || Array.from({ length: 8 }).map((_, idx) => ({ id: `placeholder-${idx}` }))).slice(0, 8).map((book) => (
-              <div className="book-cardg" key={book.isbn13 || book.id}>
-                <div className="book-cover">
-                  <img
-                    src={book.thumbnail || '/assets/placeholder.png'}
-                    alt={book.title || 'Book Cover'}
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => book.isbn13 && handleBookClick(book.isbn13 || book.id)}
-                  />
-                </div>
+            <div className="book-cardg" key={book.isbn13 || book.id}>
+              <div className="book-cover">
+                <img
+                  src={book.thumbnail || '/assets/placeholder.png'}
+                  alt={book.title || 'Book Cover'}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => book.isbn13 && handleBookClick(book.isbn13 || book.id)}
+                />
               </div>
+              <div className="book-title" title={book.title}>
+                {book.title || 'Untitled'}
+              </div>
+            </div>
             ))}
           </div>
         </section>

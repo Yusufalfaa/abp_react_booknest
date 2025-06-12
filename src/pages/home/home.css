@@ -95,7 +95,8 @@
   flex: 0 0 130px;
   width: 130px;
   height: 180px;
-  margin: 2% 2%;
+  margin-top: 12px;
+  margin-bottom: 25px;
 }
 
 .book-card.featured .book-desc {
@@ -172,4 +173,16 @@
 
 .see-more-btn:hover {
   background-color: #c25757;
+}
+
+.book-title {
+  font-size: 0.85rem;
+  text-align: center;
+  height: 24px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--black-color);
+  font-weight: 600;
+  width: 100%;
 }

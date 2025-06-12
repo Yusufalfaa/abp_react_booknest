@@ -95,19 +95,21 @@ const MyBooks = () => {
                     }
                     alt={book.title || "Book cover"}
                     className="book-cover"
-                    style={{ cursor: "pointer" }} // Indicate clickable
+                    style={{ cursor: "pointer" }}
                     onClick={() => handleBookClick(book.isbn13 || book.id)}
                   />
                 </td>
                 <td>{book.title || "Untitled"}</td>
                 <td>{book.authors || "Unknown Author"}</td>
-                <td><strong>{book.average_rating || "-"}</strong></td>
+                <td>
+                  <strong>{book.average_rating || "-"}</strong>
+                </td>
                 <td>
                   <button
                     className="btn btn-danger"
                     onClick={() => handleDeleteBook(book.id)}
                   >
-                    Delete
+                    Remove Book
                   </button>
                 </td>
               </tr>
