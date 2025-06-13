@@ -32,15 +32,15 @@
 
 /* Fonts */
 :root {
-    --body-font           : "Nunito", sans-serif;
-    --heading-font        : "Nunito", sans-serif;
+  --body-font: "Nunito", sans-serif;
+  --heading-font: "Nunito", sans-serif;
 }
 
 /* Global Styling for all buttons to maintain consistency */
 * {
-    font-family: 'Nunito', sans-serif;
-    margin: 0;
-    padding: 0;
+  font-family: "Nunito", sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
 button,

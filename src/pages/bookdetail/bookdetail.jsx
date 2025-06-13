@@ -6,6 +6,12 @@ import { db } from "../../firebase/firebase";
 import { Helmet } from "react-helmet";
 import { getAuth } from "firebase/auth";
 import BookService from "../../firebase/bookService";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faStar as solidStar,
+  faStarHalfAlt,
+} from "@fortawesome/free-solid-svg-icons";
+import { faStar as regularStar } from "@fortawesome/free-regular-svg-icons";
 
 const BookDetail = () => {
   const { id } = useParams(); // This is isbn13 from AllBooks
@@ -53,6 +59,35 @@ const BookDetail = () => {
     fetchBookDetails();
     checkIfBookInList();
   }, [id, auth.currentUser]); // Re-run when id or user changes
+
+  const renderStars = (rating) => {
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(<FontAwesomeIcon key={i} icon={solidStar} color="#ffd700" />);
+    }
+
+    if (hasHalfStar && fullStars < 5) {
+      stars.push(
+        <FontAwesomeIcon key="half" icon={faStarHalfAlt} color="#ffd700" />
+      );
+    }
+
+    const remaining = 5 - stars.length;
+    for (let i = 0; i < remaining; i++) {
+      stars.push(
+        <FontAwesomeIcon
+          key={`empty-${i}`}
+          icon={regularStar}
+          color="#ffd700"
+        />
+      );
+    }
+
+    return stars;
+  };
 
   const handleToggleBook = async () => {
     const user = auth.currentUser;
@@ -103,13 +138,14 @@ const BookDetail = () => {
 
   return (
     <section id="forum-main" className="position-relative padding-large">
-      <div className="container">
+      <div
+        className="hero-section"
+        style={{ backgroundImage: "url('/assets/bgDarker.png')" }}
+      ></div>
+      <div className="book-detail-container container">
         <Helmet>
           <title>{book.title || "Book"} - BookNest</title>
         </Helmet>
-        <h1>
-          <strong>{book.title || "Untitled"}</strong>
-        </h1>
         <div className="book-info">
           <img
             src={
@@ -120,15 +156,24 @@ const BookDetail = () => {
             className="book-thumbnail"
           />
           <div className="book-details">
-            <p><strong>Author:</strong> {book.authors || "Unknown"}</p>
-            <p><strong>Pages:</strong> {book.num_pages || "N/A"}</p>
-            <p><strong>Published Year:</strong> {book.published_year || "N/A"}</p>
-            <p><strong>Average Rating:</strong> {book.average_rating || "N/A"}</p>
-            <p><strong>Categories:</strong> {book.categories || "N/A"}</p>
+            <p className="title">{book.title || "Untitled"}</p>
+            <p className="author">{book.authors || "Unknown"}</p>
+            <div className="rating">
+              {renderStars(book.average_rating || 0)}
+              <span className="rating-number">
+                {(book.average_rating || 0).toFixed(1)}
+              </span>
+            </div>
+            <p className="desc">
+              {book.description || "No description available."}
+            </p>
+            <div className="genre-hero">
+              Genres: <p className="genre">{book.categories || "N/A"}</p>
+            </div>
           </div>
         </div>
 
-        <div className="mt-4">
+        <div className="book-button">
           <button
             className="btn btn-primary"
             onClick={handleToggleBook}
@@ -137,11 +182,10 @@ const BookDetail = () => {
             {isBookInList ? "Remove from MyBook List" : "Add to MyBook List"}
           </button>
           {error && <div className="text-danger mt-2">{error}</div>}
-        </div>
-
-        <div className="book-description mt-4">
-          <h3><strong>Description</strong></h3>
-          <p>{book.description || "No description available."}</p>
+          <div className="book-button-info">
+            <p className="page">{book.num_pages || "N/A"} Pages</p>
+            <p className="year">Released in {book.published_year || "N/A"}</p>
+          </div>
         </div>
       </div>
     </section>

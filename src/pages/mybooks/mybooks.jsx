@@ -54,7 +54,13 @@ const MyBooks = () => {
     }
 
     try {
+      // Menghapus buku dari Firestore
       await bookService.removeBook(userId, bookId);
+
+      // Menghapus status buku dari localStorage
+      localStorage.removeItem(`book-${bookId}`);
+
+      // Memperbarui state books agar UI terupdate
       setBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId));
       setError(null);
     } catch (err) {
@@ -124,6 +130,7 @@ const MyBooks = () => {
                 <td>
                   <img
                     src={book.thumbnail || "https://via.placeholder.com/80x120"}
+                    src={book.thumbnail || "https://via.placeholder.com/80x120"}
                     alt={book.title || "Book cover"}
                     className="book-cover-mb"
                     style={{ cursor: "pointer" }}
@@ -158,3 +165,4 @@ const MyBooks = () => {
 };
 
 export default MyBooks;
+

@@ -32,7 +32,7 @@ const Home = () => {
   ], []);
 
   useEffect(() => {
-    document.title = 'Home - BookNest';
+    document.title = "Home - BookNest";
 
     const unsubscribe = onAuthStateChanged(authRef.current, (firebaseUser) => {
       setUser(firebaseUser);
@@ -40,7 +40,7 @@ const Home = () => {
 
     const fetchRandomBooks = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, 'books'));
+        const querySnapshot = await getDocs(collection(db, "books"));
         const allBooks = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
@@ -49,8 +49,8 @@ const Home = () => {
         const shuffled = allBooks.sort(() => 0.5 - Math.random());
         setRandomBooks(shuffled.slice(0, 6));
       } catch (err) {
-        console.error('Error fetching random books:', err);
-        setError('Failed to load random books.');
+        console.error("Error fetching random books:", err);
+        setError("Failed to load random books.");
       }
     };
 
@@ -175,9 +175,16 @@ const Home = () => {
     navigate(`/bookdetail/${isbn13}`);
   };
 
+  const handleSeeMore = (genre) => {
+    navigate(`/genre/${genre}`);
+  };
+
   return (
     <div className="home-page">
-      <div className="hero-section" style={{ backgroundImage: "url('/assets/bgDarker.png')" }}>
+      <div
+        className="hero-section"
+        style={{ backgroundImage: "url('/assets/bgDarker.png')" }}
+      >
         <h1>Find and rate your best book</h1>
       </div>
 
@@ -267,3 +274,4 @@ const Home = () => {
 };
 
 export default Home;
+

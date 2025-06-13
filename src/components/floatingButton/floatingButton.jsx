@@ -1,6 +1,6 @@
-import React from 'react';
-import './floatingButton.css';
-import { Link } from 'react-router-dom';
+import React from "react";
+import "./floatingButton.css";
+import { Link } from "react-router-dom";
 
 const FloatingFAQButton = () => {
   return (
