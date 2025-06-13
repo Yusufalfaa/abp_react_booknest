@@ -1,8 +1,16 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { db, doc, getDoc, collection, getDocs, addDoc, serverTimestamp } from "../../firebase/firebase";
+import {
+  db,
+  doc,
+  getDoc,
+  collection,
+  getDocs,
+  addDoc,
+  serverTimestamp,
+} from "../../firebase/firebase";
 import { onAuthStateChanged, getAuth } from "firebase/auth";
-import './reply.css';
+import "./reply.css";
 
 import { Alert } from "../../components/Alerts/alert.jsx";
 
@@ -11,23 +19,27 @@ const ForumDetailPage = () => {
     document.title = "Reply to Discussion - BookNest";
   }, []);
 
-
   const [forum, setForum] = useState(null);
   const [replies, setReplies] = useState([]);
   const [allReplies, setAllReplies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
-  const [replyContent, setReplyContent] = useState('');
+  const [replyContent, setReplyContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const maxReplyLength = 2000;
 
   const queryParams = new URLSearchParams(useLocation().search);
   const forumId = queryParams.get("forumId");
 
-  const [alertConfig, setAlertConfig] = useState({ show: false, type: '', title: '', message: '' });
+  const [alertConfig, setAlertConfig] = useState({
+    show: false,
+    type: "",
+    title: "",
+    message: "",
+  });
 
-  const [currentPage, setCurrentPage] = useState(1);  
-  const pageSize = 5;  
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 5;
 
   const [totalPages, setTotalPages] = useState(1);
 
@@ -68,30 +80,35 @@ const ForumDetailPage = () => {
     const fetchReplies = async () => {
       const repliesRef = collection(doc(db, "forums", forumId), "replies");
       const replySnap = await getDocs(repliesRef);
-      const replyList = replySnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const replyList = replySnap.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
 
       // Sort replies by date (newest to oldest)
       replyList.sort((a, b) => (b.date?.seconds || 0) - (a.date?.seconds || 0));
 
-      setAllReplies(replyList); 
+      setAllReplies(replyList);
       const totalReplies = replyList.length;
-      setTotalPages(Math.ceil(totalReplies / pageSize)); 
+      setTotalPages(Math.ceil(totalReplies / pageSize));
 
       // Get the replies for the current page (pagination)
-      const displayedReplies = replyList.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+      const displayedReplies = replyList.slice(
+        (currentPage - 1) * pageSize,
+        currentPage * pageSize
+      );
       setReplies(displayedReplies);
     };
 
     if (forumId) fetchReplies();
   }, [forumId, currentPage]);
 
-
   // Submit reply handler
   const handleReplySubmit = async (e) => {
     e.preventDefault();
 
     if (!replyContent.trim()) {
-      showAlert('warning', 'Empty Reply', 'Reply cannot be empty.');
+      showAlert("warning", "Empty Reply", "Reply cannot be empty.");
       return;
     }
 
@@ -106,20 +123,28 @@ const ForumDetailPage = () => {
         date: serverTimestamp(),
       });
 
-      setReplyContent('');
+      setReplyContent("");
 
       // Update the replies list by fetching it again
       const updatedReplies = await fetchUpdatedReplies();
       setReplies(updatedReplies);
 
       // Directly update the number of replies displayed
-      setAllReplies(prevReplies => [...prevReplies, { content: replyContent, username: user.displayName || user.email || "Anonymous", userId: user.uid, date: serverTimestamp() }]);
+      setAllReplies((prevReplies) => [
+        ...prevReplies,
+        {
+          content: replyContent,
+          username: user.displayName || user.email || "Anonymous",
+          userId: user.uid,
+          date: serverTimestamp(),
+        },
+      ]);
       setTotalPages(Math.ceil(allReplies.length / pageSize)); // Update total pages if needed
 
-      showAlert('success', 'Success!', 'Reply successfully posted!');
+      showAlert("success", "Success!", "Reply successfully posted!");
     } catch (error) {
       console.error("Error posting reply:", error);
-      showAlert('error', 'Error', 'Failed to post reply. Please try again.');
+      showAlert("error", "Error", "Failed to post reply. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -129,12 +154,17 @@ const ForumDetailPage = () => {
   const fetchUpdatedReplies = async () => {
     const repliesRef = collection(doc(db, "forums", forumId), "replies");
     const replySnap = await getDocs(repliesRef);
-    const replyList = replySnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const replyList = replySnap.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
 
-    const displayedReplies = replyList.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+    const displayedReplies = replyList.slice(
+      (currentPage - 1) * pageSize,
+      currentPage * pageSize
+    );
     return displayedReplies;
   };
-
 
   // Handle page change
   const handlePageChange = (page) => {
@@ -148,7 +178,7 @@ const ForumDetailPage = () => {
   const showAlert = (type, title, message, duration = 2000) => {
     setAlertConfig({ show: true, type, title, message });
     setTimeout(() => {
-      setAlertConfig({ show: false, type: '', title: '', message: '' });
+      setAlertConfig({ show: false, type: "", title: "", message: "" });
     }, duration);
   };
 
@@ -167,10 +197,10 @@ const ForumDetailPage = () => {
         <div className="card-body">
           <h5 className="fw-bold">{forum.title}</h5>
           <p className="mb-1">
-            {forum.username || 'Unknown User'} -{" "}
+            {forum.username || "Unknown User"} -{" "}
             {forum.date?.seconds
               ? new Date(forum.date.seconds * 1000).toLocaleString()
-              : 'Unknown Date'}
+              : "Unknown Date"}
           </p>
           <p>{forum.content}</p>
         </div>
@@ -192,13 +222,15 @@ const ForumDetailPage = () => {
                 ></textarea>
               </div>
               <div className="d-flex justify-content-end align-items-end gap-2">
-                <div className="char-count">{replyContent.length}/{maxReplyLength}</div>
+                <div className="char-count">
+                  {replyContent.length}/{maxReplyLength}
+                </div>
                 <button
                   type="submit"
                   className="btn btn-sm rounded-3 btn-primary-custom"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Sending...' : 'Reply'}
+                  {isSubmitting ? "Sending..." : "Reply"}
                 </button>
               </div>
             </div>
@@ -219,7 +251,7 @@ const ForumDetailPage = () => {
           {replies.length === 0 ? (
             <p className="text-center">No replies yet.</p>
           ) : (
-            replies.map(reply => (
+            replies.map((reply) => (
               <div className="card mb-3 border shadow-sm" key={reply.id}>
                 <div className="card-body">
                   <div className="d-flex align-items-center mb-2">
@@ -240,7 +272,7 @@ const ForumDetailPage = () => {
                       </small>
                     </div>
                   </div>
-                  <p className={reply.content ? 'text-left' : 'text-center'}>
+                  <p className={reply.content ? "text-left" : "text-center"}>
                     {reply.content}
                   </p>
                 </div>
@@ -251,18 +283,42 @@ const ForumDetailPage = () => {
       </div>
 
       {/* Pagination */}
-      <nav aria-label="Page navigation example" style={{ marginTop: '32px' }}>
+      <nav aria-label="Page navigation example" style={{ marginTop: "32px" }}>
         <ul className="pagination justify-content-center">
-          <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-            <button className="page-link" onClick={() => handlePageChange(currentPage - 1)}>Prev</button>
+          <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+            <button
+              className="page-link"
+              onClick={() => handlePageChange(currentPage - 1)}
+            >
+              Prev
+            </button>
           </li>
           {[...Array(totalPages)].map((_, index) => (
-            <li className={`page-item ${currentPage === index + 1 ? 'active' : ''}`} key={index}>
-              <button className="page-link" onClick={() => handlePageChange(index + 1)}>{index + 1}</button>
+            <li
+              className={`page-item ${
+                currentPage === index + 1 ? "active" : ""
+              }`}
+              key={index}
+            >
+              <button
+                className="page-link"
+                onClick={() => handlePageChange(index + 1)}
+              >
+                {index + 1}
+              </button>
             </li>
           ))}
-          <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-            <button className="page-link" onClick={() => handlePageChange(currentPage + 1)}>Next</button>
+          <li
+            className={`page-item ${
+              currentPage === totalPages ? "disabled" : ""
+            }`}
+          >
+            <button
+              className="page-link"
+              onClick={() => handlePageChange(currentPage + 1)}
+            >
+              Next
+            </button>
           </li>
         </ul>
       </nav>
