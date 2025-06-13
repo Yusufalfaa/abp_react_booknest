@@ -14,7 +14,7 @@
   --primary-color: #c76e6f;
   --bs-body-color: #272727;
   --bs-secondary-color: #ffe8f0;
-  --bs-secondary-rgb: 255, 232, 240;
+  --bs-secondary-rgb: rgb(255, 232, 240);
   --bs-primary-rgb: rgb(248, 109, 114);
   --bs-border-color: #e3e3e3;
   --bs-dropdown-link-active-bg: #f5f5f5;
@@ -60,7 +60,6 @@
   box-shadow: var(--bs-box-shadow);
   margin-bottom: 30px;
   text-align: left;
-  padding-left: 10px;
 }
 
 @media (max-width: 768px) {
@@ -159,15 +158,17 @@
 /* Reply Button */
 #reply-btn {
   font-size: 12px;
-  color: var(--bs-body-color);
-  background-color: var(--white-color);
-  border: 1px solid var(--gray-color-300);
-  padding: 5px 15px;
+  color: var(--white-color);
+  background-color: var(--primary-color);
+  border: none;
+
+  width: 100px;
+  height: 35px;
 }
 
 #reply-btn:hover {
-  background-color: var(--bs-secondary-color);
-  color: var(--gray-color-800);
+  background-color: #d89192;
+  color: var(--white-color);
 }
 
 #reply-btn i,
@@ -185,8 +186,7 @@
 
 .reply-wrapper {
   max-width: 1100px;
-  margin: -24px auto 24px auto; /* Atas agak rapat, bawah agak renggang */
-  padding: 0 12px;
+  margin-top: 30px;
 }
 
 .replies-wrapper {

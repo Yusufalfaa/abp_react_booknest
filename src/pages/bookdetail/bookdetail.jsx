@@ -6,9 +6,15 @@ import { db } from "../../firebase/firebase";
 import { Helmet } from "react-helmet";
 import { getAuth } from "firebase/auth";
 import BookService from "../../firebase/bookService";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faStar as solidStar,
+  faStarHalfAlt,
+} from "@fortawesome/free-solid-svg-icons";
+import { faStar as regularStar } from "@fortawesome/free-regular-svg-icons";
 
 const BookDetail = () => {
-  const { id } = useParams(); // Ini adalah isbn13 dari AllBooks
+  const { id } = useParams(); // This is isbn13 from AllBooks
   const [book, setBook] = useState(null);
   const [isBookInList, setIsBookInList] = useState(false);
   const [error, setError] = useState(null);
@@ -22,11 +28,10 @@ const BookDetail = () => {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const bookData = { id: docSnap.id, ...docSnap.data() };
-          // Pastikan isbn13 sudah ada
-          bookData.isbn13 = bookData.isbn13 || docSnap.id;
+          bookData.isbn13 = bookData.isbn13 || id; // Ensure isbn13
           setBook(bookData);
         } else {
-          console.log("No such document!");
+          console.log("No such book document!");
           setError("Book not found.");
         }
       } catch (error) {
@@ -39,33 +44,50 @@ const BookDetail = () => {
       const user = auth.currentUser;
       if (user) {
         try {
-          const bookRef = doc(db, "users", user.uid, "books", id);
+          const bookRef = doc(db, "users", user.uid, "books", id); // Check by isbn13
           const bookSnap = await getDoc(bookRef);
           setIsBookInList(bookSnap.exists());
-          // Simpan status ke localStorage agar tetap ada setelah refresh
-          localStorage.setItem(
-            `book-${id}`,
-            bookSnap.exists() ? "inList" : "notInList"
-          );
         } catch (err) {
-          console.error("Error checking book list:", err);
-          setError("Failed to load book list status.");
+          console.error("Error checking book in user collection:", err);
+          setError("Failed to check book status.");
         }
+      } else {
+        setIsBookInList(false); // Reset if no user
       }
     };
 
     fetchBookDetails();
     checkIfBookInList();
-  }, [id, auth]);
+  }, [id, auth.currentUser]); // Re-run when id or user changes
 
-  useEffect(() => {
-    const storedStatus = localStorage.getItem(`book-${id}`);
-    if (storedStatus === "inList") {
-      setIsBookInList(true);
-    } else if (storedStatus === "notInList") {
-      setIsBookInList(false);
+  const renderStars = (rating) => {
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(<FontAwesomeIcon key={i} icon={solidStar} color="#ffd700" />);
     }
-  }, [id]);
+
+    if (hasHalfStar && fullStars < 5) {
+      stars.push(
+        <FontAwesomeIcon key="half" icon={faStarHalfAlt} color="#ffd700" />
+      );
+    }
+
+    const remaining = 5 - stars.length;
+    for (let i = 0; i < remaining; i++) {
+      stars.push(
+        <FontAwesomeIcon
+          key={`empty-${i}`}
+          icon={regularStar}
+          color="#ffd700"
+        />
+      );
+    }
+
+    return stars;
+  };
 
   const handleToggleBook = async () => {
     const user = auth.currentUser;
@@ -77,14 +99,13 @@ const BookDetail = () => {
 
     try {
       if (isBookInList) {
+        // Remove book using isbn13 as document ID
         await bookService.removeBook(user.uid, id);
         setIsBookInList(false);
         setError(null);
-
-        // Update status di localStorage
-        localStorage.setItem(`book-${id}`, "notInList");
       } else {
-        if (!book.title) {
+        // Validate required fields
+        if (!book?.title) {
           setError("Book title is missing.");
           return;
         }
@@ -100,12 +121,10 @@ const BookDetail = () => {
           description: book.description || "",
         };
 
+        // Add book using isbn13 as document ID
         await bookService.addBook(user.uid, id, bookData);
         setIsBookInList(true);
         setError(null);
-
-        // Update status di localStorage
-        localStorage.setItem(`book-${id}`, "inList");
       }
     } catch (err) {
       console.error("Error modifying book list:", err);
@@ -119,13 +138,14 @@ const BookDetail = () => {
 
   return (
     <section id="forum-main" className="position-relative padding-large">
-      <div className="container">
+      <div
+        className="hero-section"
+        style={{ backgroundImage: "url('/assets/bgDarker.png')" }}
+      ></div>
+      <div className="book-detail-container container">
         <Helmet>
           <title>{book.title || "Book"} - BookNest</title>
         </Helmet>
-        <h1>
-          <strong>{book.title || "Untitled"}</strong>
-        </h1>
         <div className="book-info">
           <img
             src={
@@ -136,25 +156,24 @@ const BookDetail = () => {
             className="book-thumbnail"
           />
           <div className="book-details">
-            <p>
-              <strong>Author:</strong> {book.authors || "Unknown"}
+            <p className="title">{book.title || "Untitled"}</p>
+            <p className="author">{book.authors || "Unknown"}</p>
+            <div className="rating">
+              {renderStars(book.average_rating || 0)}
+              <span className="rating-number">
+                {(book.average_rating || 0).toFixed(1)}
+              </span>
+            </div>
+            <p className="desc">
+              {book.description || "No description available."}
             </p>
-            <p>
-              <strong>Pages:</strong> {book.num_pages || "N/A"}
-            </p>
-            <p>
-              <strong>Published Year:</strong> {book.published_year || "N/A"}
-            </p>
-            <p>
-              <strong>Average Rating:</strong> {book.average_rating || "N/A"}
-            </p>
-            <p>
-              <strong>Categories:</strong> {book.categories || "N/A"}
-            </p>
+            <div className="genre-hero">
+              Genres: <p className="genre">{book.categories || "N/A"}</p>
+            </div>
           </div>
         </div>
 
-        <div className="mt-4">
+        <div className="book-button">
           <button
             className="btn btn-primary"
             onClick={handleToggleBook}
@@ -163,13 +182,10 @@ const BookDetail = () => {
             {isBookInList ? "Remove from MyBook List" : "Add to MyBook List"}
           </button>
           {error && <div className="text-danger mt-2">{error}</div>}
-        </div>
-
-        <div className="book-description mt-4">
-          <h3>
-            <strong>Description</strong>
-          </h3>
-          <p>{book.description || "No description available."}</p>
+          <div className="book-button-info">
+            <p className="page">{book.num_pages || "N/A"} Pages</p>
+            <p className="year">Released in {book.published_year || "N/A"}</p>
+          </div>
         </div>
       </div>
     </section>

@@ -75,32 +75,68 @@ const ForumDetailPage = () => {
     if (forumId) fetchData();
   }, [forumId]);
 
-  // Fetch all replies (not paginated)
   useEffect(() => {
     const fetchReplies = async () => {
-      const repliesRef = collection(doc(db, "forums", forumId), "replies");
-      const replySnap = await getDocs(repliesRef);
-      const replyList = replySnap.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      if (!forumId) return;
 
-      // Sort replies by date (newest to oldest)
-      replyList.sort((a, b) => (b.date?.seconds || 0) - (a.date?.seconds || 0));
+      try {
+        // Ambil semua reply dari subcollection 'replies' di forum
+        const repliesRef = collection(doc(db, "forums", forumId), "replies");
+        const replySnap = await getDocs(repliesRef);
+        let replyList = replySnap.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
 
-      setAllReplies(replyList);
-      const totalReplies = replyList.length;
-      setTotalPages(Math.ceil(totalReplies / pageSize));
+        // Ambil data user (avatar & username) untuk setiap reply
+        const replyWithUserData = await Promise.all(
+          replyList.map(async (reply) => {
+            if (reply.userId) {
+              try {
+                const userDoc = await getDoc(doc(db, "users", reply.userId));
+                if (userDoc.exists()) {
+                  const userData = userDoc.data();
+                  reply.avatar = userData.avatar || "/assets/25.png";
+                  reply.username = userData.username || "Anonymous";
+                } else {
+                  reply.avatar = "/assets/25.png";
+                  reply.username = "Anonymous";
+                }
+              } catch (err) {
+                console.error("Error fetching user data for reply:", err);
+                reply.avatar = "/assets/25.png";
+                reply.username = "Anonymous";
+              }
+            } else {
+              reply.avatar = "/assets/25.png";
+              reply.username = "Anonymous";
+            }
+            return reply;
+          })
+        );
 
-      // Get the replies for the current page (pagination)
-      const displayedReplies = replyList.slice(
-        (currentPage - 1) * pageSize,
-        currentPage * pageSize
-      );
-      setReplies(displayedReplies);
+        // Sort replies berdasarkan tanggal terbaru
+        replyWithUserData.sort(
+          (a, b) => (b.date?.seconds || 0) - (a.date?.seconds || 0)
+        );
+
+        setAllReplies(replyWithUserData);
+
+        // Pagination: ambil slice sesuai currentPage dan pageSize
+        const totalReplies = replyWithUserData.length;
+        setTotalPages(Math.ceil(totalReplies / pageSize));
+
+        const displayedReplies = replyWithUserData.slice(
+          (currentPage - 1) * pageSize,
+          currentPage * pageSize
+        );
+        setReplies(displayedReplies);
+      } catch (error) {
+        console.error("Error fetching replies:", error);
+      }
     };
 
-    if (forumId) fetchReplies();
+    fetchReplies();
   }, [forumId, currentPage]);
 
   // Submit reply handler
@@ -203,40 +239,40 @@ const ForumDetailPage = () => {
               : "Unknown Date"}
           </p>
           <p>{forum.content}</p>
+          {/* Reply form if user is logged in */}
+          {user && (
+            <div className="reply-wrapper">
+              <form onSubmit={handleReplySubmit} className="mb-4">
+                <div className="content card p-3 shadow bg-white rounded">
+                  <div className="content-form mb-2">
+                    <textarea
+                      className="form-control forum-content input-default input-large"
+                      placeholder="Write your reply here..."
+                      value={replyContent}
+                      onChange={(e) => setReplyContent(e.target.value)}
+                      maxLength={maxReplyLength}
+                      required
+                    ></textarea>
+                  </div>
+                  <div className="d-flex justify-content-end align-items-end gap-2">
+                    <div className="char-count">
+                      {replyContent.length}/{maxReplyLength}
+                    </div>
+                    <button
+                      type="submit"
+                      id="reply-btn"
+                      className="btn btn-sm rounded-3 btn-primary-custom"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? "Sending..." : "Reply"}
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          )}
         </div>
       </div>
-
-      {/* Reply form if user is logged in */}
-      {user && (
-        <div className="reply-wrapper">
-          <form onSubmit={handleReplySubmit} className="mb-4">
-            <div className="content card p-3 shadow bg-white rounded">
-              <div className="content-form mb-2">
-                <textarea
-                  className="form-control forum-content input-default input-large"
-                  placeholder="Write your reply here..."
-                  value={replyContent}
-                  onChange={(e) => setReplyContent(e.target.value)}
-                  maxLength={maxReplyLength}
-                  required
-                ></textarea>
-              </div>
-              <div className="d-flex justify-content-end align-items-end gap-2">
-                <div className="char-count">
-                  {replyContent.length}/{maxReplyLength}
-                </div>
-                <button
-                  type="submit"
-                  className="btn btn-sm rounded-3 btn-primary-custom"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? "Sending..." : "Reply"}
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
-      )}
 
       <div className="separator-container">
         <div className="separator-inner">
@@ -257,7 +293,7 @@ const ForumDetailPage = () => {
                   <div className="d-flex align-items-center mb-2">
                     <div className="avatar-reply me-2">
                       <img
-                        src="/assets/avt.jpg"
+                        src={reply.avatar}
                         alt="Avatar"
                         className="rounded-circle"
                       />
