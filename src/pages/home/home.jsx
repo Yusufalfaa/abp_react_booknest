@@ -6,21 +6,20 @@ import { db } from '../../firebase/firebase';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import BookService from '../../firebase/bookService';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar as solidStar, faStarHalfAlt  } from "@fortawesome/free-solid-svg-icons";
+import { faStar as solidStar, faStarHalfAlt } from "@fortawesome/free-solid-svg-icons";
 import { faStar as regularStar } from "@fortawesome/free-regular-svg-icons";
+import { Alert } from '../../components/Alerts/alert';
 
 const Home = () => {
   const [randomBooks, setRandomBooks] = useState([]);
   const [genreBooks, setGenreBooks] = useState({});
   const [userBooksSet, setUserBooksSet] = useState(new Set());
-  const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
+  const [alertConfig, setAlertConfig] = useState({ show: false, type: '', title: '', message: '' });
 
   const authRef = useRef(getAuth());
   const navigate = useNavigate();
   const bookService = new BookService();
-
-
 
   const genres = useMemo(() => [
     'Fiction',
@@ -49,8 +48,7 @@ const Home = () => {
         const shuffled = allBooks.sort(() => 0.5 - Math.random());
         setRandomBooks(shuffled.slice(0, 6));
       } catch (err) {
-        console.error("Error fetching random books:", err);
-        setError("Failed to load random books.");
+        showAlert('error', 'Error', 'Failed to load random books.');
       }
     };
 
@@ -71,8 +69,7 @@ const Home = () => {
           }));
           genreData[genre] = books;
         } catch (err) {
-          console.error(`Error fetching books for ${genre}:`, err);
-          setError(`Failed to load books for ${genre}.`);
+          showAlert('error', 'Error', `Failed to load books for ${genre}.`);
         }
       }
       setGenreBooks(genreData);
@@ -91,15 +88,21 @@ const Home = () => {
       try {
         const userBooksSnapshot = await getDocs(collection(db, 'users', user.uid, 'books'));
         const userBookIdsSet = new Set(userBooksSnapshot.docs.map(doc => doc.id.toString()));
-        console.log('Fetched user books set:', userBookIdsSet);
         setUserBooksSet(userBookIdsSet);
       } catch (err) {
-        console.error('Error fetching user books:', err);
+        showAlert('error', 'Error', 'Failed to fetch user book list.');
       }
     };
 
     fetchUserBooks();
   }, [user]);
+
+  const showAlert = (type, title, message, duration = 2000) => {
+    setAlertConfig({ show: true, type, title, message });
+    setTimeout(() => {
+      setAlertConfig({ show: false, type: '', title: '', message: '' });
+    }, duration);
+  };
 
   const renderStars = (rating) => {
     const stars = [];
@@ -111,20 +114,11 @@ const Home = () => {
     }
 
     if (hasHalfStar && fullStars < 5) {
-      stars.push(
-        <FontAwesomeIcon key="half" icon={faStarHalfAlt} color="#ffd700" />
-      );
+      stars.push(<FontAwesomeIcon key="half" icon={faStarHalfAlt} color="#ffd700" />);
     }
 
-    const remaining = 5 - stars.length;
-    for (let i = 0; i < remaining; i++) {
-      stars.push(
-        <FontAwesomeIcon
-          key={`empty-${i}`}
-          icon={regularStar}
-          color="#ffd700"
-        />
-      );
+    for (let i = stars.length; i < 5; i++) {
+      stars.push(<FontAwesomeIcon key={`empty-${i}`} icon={regularStar} color="#ffd700" />);
     }
 
     return stars;
@@ -132,7 +126,7 @@ const Home = () => {
 
   const handleToggleBook = async (book) => {
     if (!user) {
-      setError('You must be logged in to manage your list.');
+      showAlert('warning', 'Login Required', 'You must be logged in to manage your list.');
       return;
     }
 
@@ -144,7 +138,7 @@ const Home = () => {
         const newSet = new Set(userBooksSet);
         newSet.delete(bookId);
         setUserBooksSet(newSet);
-        console.log(`Removed bookId ${bookId}`);
+        showAlert('success', 'Removed', 'Book removed from your list.');
       } else {
         const bookData = {
           title: book.title || 'Untitled',
@@ -161,22 +155,15 @@ const Home = () => {
         const updatedSet = new Set(userBooksSet);
         updatedSet.add(bookId);
         setUserBooksSet(updatedSet);
-        console.log(`Added bookId ${bookId}`);
+        showAlert('success', 'Added!', 'Book added to your list!');
       }
-
-      setError(null);
     } catch (err) {
-      console.error('Error managing book list:', err);
-      setError(err.message || 'Failed to update book list.');
+      showAlert('error', 'Error', 'Failed to update book list.');
     }
   };
 
   const handleBookClick = (isbn13) => {
     navigate(`/bookdetail/${isbn13}`);
-  };
-
-  const handleSeeMore = (genre) => {
-    navigate(`/genre/${genre}`);
   };
 
   return (
@@ -188,9 +175,17 @@ const Home = () => {
         <h1>Find and rate your best book</h1>
       </div>
 
+      {/* Alert section */}
+      {alertConfig.show && (
+        <Alert
+          type={alertConfig.type}
+          title={alertConfig.title}
+          message={alertConfig.message}
+        />
+      )}
+
       <section className="random-book-section">
         <h2>Explore Random Books</h2>
-        {error && <div className="text-danger mb-3">{error}</div>}
         <div className="random-book-scroll">
           {randomBooks.map((book) => {
             const bookId = (book.isbn13 || book.id).toString();
@@ -213,7 +208,6 @@ const Home = () => {
                       {(book.average_rating || 0).toFixed(1)}
                     </span>
                   </div>
-
                   <p>{book.description?.substring(0, 100) || 'No description available.'}...</p>
                   <button
                     className="add-btn"
@@ -229,7 +223,6 @@ const Home = () => {
         </div>
       </section>
 
-
       {genres.map((genre) => (
         <section className="book-sectiong" key={genre}>
           <div className="section-headerg">
@@ -242,36 +235,32 @@ const Home = () => {
             </button>
           </div>
           <div className="book-gridg">
-            {(genreBooks[genre] || Array.from({ length: 10 }).map((_, idx) => ({ id: `placeholder-${idx}` })))
-              .slice(0, 10)
-              .map((book) => (
-                <div className="book-cardg" key={book.isbn13 || book.id}>
-                  <div className="book-coverg">
-                    <img
-                      src={book.thumbnail || '/assets/placeholder.png'}
-                      alt={book.title || 'Book Cover'}
-                      className="book-imageg"
-                      onClick={() => book.isbn13 && handleBookClick(book.isbn13 || book.id)}
-                    />
-                  </div>
-                  <div className="book-ratingg">
-                    {renderStars(book.average_rating || 0)}
-                    <span className="rating-number">
-                      {(book.average_rating || 0).toFixed(1)}
-                    </span>
-                  </div>
-                  <a href={`/bookdetail/${book.isbn13}`} className="book-titleg" title={book.title}>
-                    {book.title || 'Untitled'}
-                  </a>
+            {(genreBooks[genre] || []).slice(0, 10).map((book) => (
+              <div className="book-cardg" key={book.isbn13 || book.id}>
+                <div className="book-coverg">
+                  <img
+                    src={book.thumbnail || '/assets/placeholder.png'}
+                    alt={book.title || 'Book Cover'}
+                    className="book-imageg"
+                    onClick={() => handleBookClick(book.isbn13 || book.id)}
+                  />
                 </div>
+                <div className="book-ratingg">
+                  {renderStars(book.average_rating || 0)}
+                  <span className="rating-number">
+                    {(book.average_rating || 0).toFixed(1)}
+                  </span>
+                </div>
+                <a href={`/bookdetail/${book.isbn13}`} className="book-titleg" title={book.title}>
+                  {book.title || 'Untitled'}
+                </a>
+              </div>
             ))}
           </div>
         </section>
       ))}
-
     </div>
   );
 };
 
 export default Home;
-

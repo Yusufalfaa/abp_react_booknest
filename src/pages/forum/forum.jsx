@@ -66,7 +66,7 @@ function Forum() {
       }
     );
 
-  fetchForumsAndUsers();
+  //fetchForumsAndUsers();
 
   return () => {
     if (unsubscribe) unsubscribe();

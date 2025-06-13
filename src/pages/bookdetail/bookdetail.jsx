@@ -12,6 +12,7 @@ import {
   faStarHalfAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { faStar as regularStar } from "@fortawesome/free-regular-svg-icons";
+import { Alert } from '../../components/Alerts/alert';
 
 const BookDetail = () => {
   const { id } = useParams(); // This is isbn13 from AllBooks
@@ -20,6 +21,7 @@ const BookDetail = () => {
   const [error, setError] = useState(null);
   const bookService = new BookService();
   const auth = getAuth();
+
 
   useEffect(() => {
     const fetchBookDetails = async () => {
@@ -89,48 +91,55 @@ const BookDetail = () => {
     return stars;
   };
 
-  const handleToggleBook = async () => {
-    const user = auth.currentUser;
+  const [alertConfig, setAlertConfig] = useState({ show: false, type: '', title: '', message: '' });
 
-    if (!user) {
-      setError("You must be logged in to modify your book list.");
-      return;
-    }
+const showAlert = (type, title, message, duration = 2000) => {
+  setAlertConfig({ show: true, type, title, message });
+  setTimeout(() => {
+    setAlertConfig({ show: false, type: '', title: '', message: '' });
+  }, duration);
+};
 
-    try {
-      if (isBookInList) {
-        // Remove book using isbn13 as document ID
-        await bookService.removeBook(user.uid, id);
-        setIsBookInList(false);
-        setError(null);
-      } else {
-        // Validate required fields
-        if (!book?.title) {
-          setError("Book title is missing.");
-          return;
-        }
-        const bookData = {
-          title: book.title,
-          isbn13: book.isbn13 || id,
-          authors: book.authors || "Unknown",
-          num_pages: book.num_pages || 0,
-          published_year: book.published_year || "",
-          average_rating: book.average_rating || 0,
-          categories: book.categories || "",
-          thumbnail: book.thumbnail || "",
-          description: book.description || "",
-        };
+const handleToggleBook = async () => {
+  const user = auth.currentUser;
+  if (!user) {
+    showAlert("warning", "Not Logged In", "You must be logged in to modify your book list.");
+    return;
+  }
 
-        // Add book using isbn13 as document ID
-        await bookService.addBook(user.uid, id, bookData);
-        setIsBookInList(true);
-        setError(null);
+  try {
+    if (isBookInList) {
+      await bookService.removeBook(user.uid, id);
+      setIsBookInList(false);
+      showAlert("success", "Removed", "Book removed from your list!");
+    } else {
+      if (!book?.title) {
+        showAlert("warning", "Missing Title", "Book title is missing.");
+        return;
       }
-    } catch (err) {
-      console.error("Error modifying book list:", err);
-      setError(err.message || "Failed to modify the book list. Try again.");
+
+      const bookData = {
+        title: book.title,
+        isbn13: book.isbn13,
+        authors: book.authors || "Unknown",
+        num_pages: book.num_pages || 0,
+        published_year: book.published_year || "",
+        average_rating: book.average_rating || 0,
+        categories: book.categories || "",
+        thumbnail: book.thumbnail || "",
+        description: book.description || "",
+      };
+
+      await bookService.addBook(user.uid, id, bookData);
+      setIsBookInList(true);
+      showAlert("success", "Added", "Book added to your list!");
     }
-  };
+  } catch (err) {
+    console.error("Error modifying book list:", err);
+    showAlert("error", "Error", err.message || "Failed to modify the book list. Try again.");
+  }
+};
+
 
   if (!book) {
     return <div>Loading...</div>;
@@ -181,7 +190,16 @@ const BookDetail = () => {
           >
             {isBookInList ? "Remove from MyBook List" : "Add to MyBook List"}
           </button>
+
+          {alertConfig.show && (
+            <Alert
+              type={alertConfig.type}
+              title={alertConfig.title}
+              message={alertConfig.message}
+            />
+          )}
           {error && <div className="text-danger mt-2">{error}</div>}
+
           <div className="book-button-info">
             <p className="page">{book.num_pages || "N/A"} Pages</p>
             <p className="year">Released in {book.published_year || "N/A"}</p>

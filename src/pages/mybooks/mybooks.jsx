@@ -130,7 +130,6 @@ const MyBooks = () => {
                 <td>
                   <img
                     src={book.thumbnail || "https://via.placeholder.com/80x120"}
-                    src={book.thumbnail || "https://via.placeholder.com/80x120"}
                     alt={book.title || "Book cover"}
                     className="book-cover-mb"
                     style={{ cursor: "pointer" }}
