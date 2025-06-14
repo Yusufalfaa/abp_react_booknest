@@ -7,6 +7,7 @@ import BookService from "../../firebase/bookService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as solidStar, faStarHalfAlt  } from "@fortawesome/free-solid-svg-icons";
 import { faStar as regularStar } from "@fortawesome/free-regular-svg-icons";
+import { Alert } from '../../components/Alerts/alert';
 
 const MyBooks = () => {
   const [books, setBooks] = useState([]);
@@ -63,9 +64,10 @@ const MyBooks = () => {
       // Memperbarui state books agar UI terupdate
       setBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId));
       setError(null);
+      showAlert('success', 'Removed', 'Book removed from your list.');  
     } catch (err) {
       console.error("Error deleting book:", err);
-      setError(err.message || "Failed to delete the book. Try again.");
+      showAlert('error', 'Failed', err.message || 'Failed to delete the book. Try again.');
     }
   };
 
@@ -100,6 +102,21 @@ const MyBooks = () => {
     }
 
     return stars;
+  };
+
+  const [alertConfig, setAlertConfig] = useState({
+    show: false,
+    type: '',
+    title: '',
+    message: ''
+  });
+
+  const showAlert = (type, title, message, duration = 2000) => {
+    setAlertConfig({ show: true, type, title, message });
+
+    setTimeout(() => {
+      setAlertConfig({ ...alertConfig, show: false });
+    }, duration);
   };
 
 
@@ -159,8 +176,17 @@ const MyBooks = () => {
           </tbody>
         </table>
       )}
+    {alertConfig.show && (
+      <Alert
+        type={alertConfig.type}
+        title={alertConfig.title}
+        message={alertConfig.message}
+        onClose={() => setAlertConfig({ ...alertConfig, show: false })}
+      />
+    )}
     </div>
   );
+  
 };
 
 export default MyBooks;

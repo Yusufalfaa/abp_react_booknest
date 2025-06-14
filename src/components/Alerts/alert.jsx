@@ -5,11 +5,11 @@ function Alert({ title, message, type = 'success', onClose, duration = 2000 }) {
   const getIcon = () => {
     switch (type) {
       case 'success':
-        return '✔'; // atau pakai ikon seperti ✅
+        return '✔';
       case 'warning':
         return '!';
       case 'error':
-        return '✖'; // atau ❌
+        return '✖'; 
       case 'info':
         return 'ℹ';
       default:

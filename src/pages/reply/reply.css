@@ -203,7 +203,7 @@
 
 .separator-inner {
   display: flex;
-  flex-direction: column; /* ubah jadi vertikal */
+  flex-direction: column;
   width: 100%;
   max-width: 1140px;
   padding: 0 20px;
@@ -218,7 +218,7 @@
 }
 
 .custom-separator {
-  height: 1px;
+  height: 4px;
   background-color: #ccc;
   border: none;
   width: 100%;
