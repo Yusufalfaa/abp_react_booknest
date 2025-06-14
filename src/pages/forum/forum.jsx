@@ -9,11 +9,9 @@ import { Alert } from '../../components/Alerts/alert.jsx';
 import './forum.css';
 
 function Forum() {
-
   useEffect(() => {
     document.title = "Community Forum - BookNest";
   }, []);
-
 
   const location = useLocation(); // Get current location (url) for tracking navigation changes
   const searchParams = new URLSearchParams(location.search);
@@ -28,60 +26,55 @@ function Forum() {
   const [showAlert, setShowAlert] = useState(false);
 
   // Inside your Forum component
+  useEffect(() => {
+    let unsubscribe;
 
+    async function fetchForumsAndUsers() {
+      // Fetch semua users dulu (sekali)
+      const usersSnapshot = await getDocs(collection(db, "users"));
+      const users = {};
+      usersSnapshot.forEach(doc => {
+        users[doc.id] = doc.data(); // simpan user data by id
+      });
 
-useEffect(() => {
-  let unsubscribe;
+      // Pasang listener realtime untuk forums
+      unsubscribe = onSnapshot(collection(db, "forums"), async (querySnapshot) => {
+        const forumsData = await Promise.all(querySnapshot.docs.map(async (doc) => {
+          const forum = { id: doc.id, ...doc.data() };
 
-  async function fetchForumsAndUsers() {
-    // Fetch semua users dulu (sekali)
-    const usersSnapshot = await getDocs(collection(db, "users"));
-    const users = {};
-    usersSnapshot.forEach(doc => {
-      users[doc.id] = doc.data(); // simpan user data by id
-    });
+          // ambil jumlah replies
+          const repliesSnapshot = await getDocs(collection(db, "forums", forum.id, "replies"));
+          forum.replies = repliesSnapshot.size;
 
-    // Pasang listener realtime untuk forums
-    unsubscribe = onSnapshot(collection(db, "forums"), async (querySnapshot) => {
-      const forumsData = await Promise.all(querySnapshot.docs.map(async (doc) => {
-        const forum = { id: doc.id, ...doc.data() };
+          // Ambil avatar user dari users object (hasil fetch di atas)
+          const user = users[forum.userId];
+          forum.avatar = user?.avatar || "/assets/25.png";
+          forum.username = user?.username || "Unknown User";
 
-        // ambil jumlah replies
-        const repliesSnapshot = await getDocs(collection(db, "forums", forum.id, "replies"));
-        forum.replies = repliesSnapshot.size;
+          return forum;
+        }));
 
-        // Ambil avatar user dari users object (hasil fetch di atas)
-        const user = users[forum.userId];
-        forum.avatar = user?.avatar || "/assets/25.png";
-        forum.username = user?.username || "Unknown User";
+        // Sorting sesuai kebutuhan
+        if (sort === "popular") {
+          forumsData.sort((a, b) => (b.replies || 0) - (a.replies || 0));
+        } else {
+          forumsData.sort((a, b) => {
+            const dateA = a.date?.seconds || 0;
+            const dateB = b.date?.seconds || 0;
+            return dateB - dateA;
+          });
+        }
 
-        return forum;
-      }));
+        setForums(forumsData);
+      });
+    }
 
-      // Sorting sesuai kebutuhan
-      if (sort === "popular") {
-        forumsData.sort((a, b) => (b.replies || 0) - (a.replies || 0));
-      } else {
-        forumsData.sort((a, b) => {
-          const dateA = a.date?.seconds || 0;
-          const dateB = b.date?.seconds || 0;
-          return dateB - dateA;
-        });
-      }
+    fetchForumsAndUsers();
 
-      setForums(forumsData);
-    });
-  }
-
-  fetchForumsAndUsers();
-
-  return () => {
-    if (unsubscribe) unsubscribe();
-  };
-}, [sort]);
-
-
-
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
+  }, [sort]);
 
   // Detect if the user is logged in
   useEffect(() => {
